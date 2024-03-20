@@ -52,22 +52,19 @@ void CGameStateRun::OnBeginState()
 	Score_number[2].SetFrameIndexOfBitmap(0);
 
 	// -------------
-	thetab.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" , "resources/hook_13.bmp",
-		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
-		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp", 
-		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
-	thetab.SetTopLeft(375, 75);
-	hook.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
-	hook.SetTopLeft(400, 75);
+	thetab.LoadTheTab();
+	thetab.SetPosition(375, 75);
+	hook.LoadHook();
+	hook.SetPosition(400, 75);
 
-	status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+	hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+
 }
+int game_framework::hook_status;
+int game_framework::obj_status;
+
+double hookcpp::x = 0;
+double hookcpp::y = 0;
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
@@ -101,39 +98,22 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			}
 		}
 	}
-	if (status == 0) {//鉤子擺動中
-		thetab.SetAnimation(100, false);
-		tmp_treasure = 1;//未碰到礦物
+	if (hook_status == 0) {//鉤子擺動中
+		thetab.SetAnimate(100, false);
+		obj_status = 1;//未碰到礦物
 	}
-	if (status == 1) {//鉤子出發狩獵
-		//決定角度
-		frameindex = thetab.GetFrameIndexOfBitmap();
-		if (frameindex > 13)frameindex = 27 - frameindex;
-		hook.SetFrameIndexOfBitmap(frameindex - 1);
 
-		//為每個礦物寫for迴圈：gold[i]、tmp_treasure[i]
-		if (tmp_treasure == 1) {//礦物流浪中，檢查鉤子礦物是否重疊
-			if (hookcpp::IsOverlap(hook, gold.GetPositionX(), gold.GetPositionY())) {
-				tmp_treasure = 2;//狀態：碰到後回家路上
-				status = 2;
-			}
-		}
-		//迴圈結束
+	if (hook_status == 1) {//鉤子出發狩獵
+		//決定角度
+		frameindex = thetab.GetFrameIndex();
+		if (frameindex > 13)frameindex = 27 - frameindex;
+		hook.SetHook(frameindex);
 		
 		//鉤子出發
 		hookcpp::ReleaseTab(hook, frameindex);
-
 	}
-	if (status == 2) {
-		//為每個礦物寫for迴圈：gold[i]、tmp_treasure[i]
-		if (tmp_treasure == 2) {//礦物在回家路上
-			if (hookcpp::GoldBackHome(gold, frameindex)) {
-				tmp_treasure = 0;
-			}
-			//觸發GoldBackHome，如果GoldBackHome執行完畢(return 1)
-		}
-		//迴圈結束
 
+	if (hook_status == 2) {
 		//鉤子回家
 		hookcpp::RollTab(hook, frameindex);
 	}
@@ -157,8 +137,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			Time_number[2].SetFrameIndexOfBitmap(9);
 		}
 	}
-	if (nChar == VK_DOWN && status == 0) {
-		status = 1; //狀態：放線
+	if (nChar == VK_DOWN && hook_status == 0) {
+		hook_status = 1; //狀態：放線
 	}
 }
 
@@ -196,18 +176,18 @@ void CGameStateRun::OnShow()
 		background.ShowBitmap();
 		Time.ShowBitmap();
 		Score.ShowBitmap();
-		if (status == 0) {//鉤子擺動中
-			thetab.ShowBitmap();
-			hook.UnshowBitmap();
+		if (hook_status == 0) {//鉤子擺動中
+			thetab.Show();
+			hook.UnShow();
 		}
-		else if (status == 1 || status == 2) {//鉤子出發
-			thetab.UnshowBitmap();
-			hook.ShowBitmap();
+		else if (hook_status == 1 || hook_status == 2) {//鉤子出發
+			thetab.UnShow();
+			hook.Show();
 		}
-		if (tmp_treasure == 0) {//碰到礦物已帶回家	
+		if (obj_status == 0) {//碰到礦物已帶回家	
 			gold.UnShow();
 		}
-		else if (tmp_treasure == 1 || tmp_treasure == 2) {//未碰到礦物/碰到後回家路上
+		else if (obj_status == 1 || obj_status == 2) {//未碰到礦物/碰到後回家路上
 			gold.Show();
 		}
 		if (Time_number[0].GetFrameIndexOfBitmap() == 0) {

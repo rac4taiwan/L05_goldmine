@@ -39,10 +39,16 @@ namespace game_framework {
 		CMovingBitmap mine;
 	};
 
+
 	class hookcpp : public CMovingBitmap {
 	public:
 		hookcpp();
 		~hookcpp();
+		void LoadTheTab();
+		void LoadHook();
+		void SetHook(int frameindex);
+		void Show();
+		void UnShow();
 		static void ReleaseTab(hookcpp hook, int angle);
 		static void RollTab(hookcpp hook, int angle);
 		static bool IsOverlap(hookcpp hook, int a, int b);
@@ -50,13 +56,15 @@ namespace game_framework {
 		void SetPosition(int x, int y);
 		int GetPositionX();
 		int GetPositionY();
+		int GetFrameIndex();
+		void SetAnimate(int delay, bool once);
 	private:
 		CMovingBitmap mine;
 		static double x;
 		static double y;
 		double angle;			//顯示目前角度
 	};
-	
+
 }
 
 #endif
