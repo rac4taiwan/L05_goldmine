@@ -11,66 +11,92 @@
 
 using namespace game_framework;
 
-void CGameStateRun::ReleaseTab(int frameindex)
+hookcpp::hookcpp() {
+
+}
+
+hookcpp::~hookcpp() {
+
+}
+
+void hookcpp::SetPosition(int x, int y) {
+	mine.SetTopLeft(x, y);
+}
+
+int hookcpp::GetPositionX() {
+	return mine.GetLeft();
+}
+
+int hookcpp::GetPositionY() {
+	return mine.GetTop();
+}
+
+void hookcpp::ReleaseTab(hookcpp hook, int frameindex)
 {
-	angle = 340 - (10 * frameindex);
+	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
 
-	if (0) {
-		tmp_treasure = 2;
-		status = 2;
+	if (hook.GetPositionX() + 150 > 900 || hook.GetPositionX()  < 0 || hook.GetTop() +100 > 600) {
+		status = 2;//鉤子到底了 回家吧
 	}
-	else if (hook.GetLeft() + 150 > 900 || hook.GetLeft()  < 0 || hook.GetTop() +100 > 600) {
-		status = 2;
-	}
-	else {
-		x = hook.GetLeft() + 10 * cos(angle);
-		y = hook.GetTop() - 10 * sin(angle);
-		hook.SetTopLeft(int(x), int(y));
+	else {//鉤子繼續走
+		x = hook.GetPositionX() + 10 * cos(angle);
+		y = hook.GetPositionY() - 10 * sin(angle);
+		hook.SetPosition(int(x), int(y));
 	}
 }
 
-void CGameStateRun::RollTab(int frameindex)
+void hookcpp::RollTab(hookcpp hook, int frameindex)
 {
-	angle = 340 - (10 * frameindex);
+	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
 
-	if (hook.GetTop() <= 75) {//回到一定高度後回收
+	if (hook.GetPositionY() <= 75) {//回到一定高度後回收
 		status = 0;
-		hook.SetTopLeft(400, 75);
+		hook.SetPosition(400, 75);
 	}
 	else {
 		//要再乘以速度設定
-		x = hook.GetLeft() - 10 * cos(angle);
-		y = hook.GetTop() + 10 * sin(angle);
-		hook.SetTopLeft(int(x), int(y));
-
+		x = hook.GetPositionX() - 10 * cos(angle);
+		y = hook.GetPositionY() + 10 * sin(angle);
+		hook.SetPosition(int(x), int(y));
 	}	
 }
 
-/*bool CGameStateRun::IsOverlap(CMovingBitmap hook, GoldMine bmp) {
-	if (hook.GetTop() > bmp.GetPositionY() && hook.GetTop() < bmp.GetPositionY() + 85) {
-		if (hook.GetLeft() > bmp.GetPositionX() && hook.GetLeft() < bmp.GetPositionX() + 150) {
+bool hookcpp::IsOverlap(hookcpp hook, int a, int b){
+	if (hook.GetPositionY() == b) {
+		if (hook.GetPositionX() == a) {
 			return true;
 		}
 	}
 	return false;
+}
+/*if (hook.GetPositionY() > bmp.GetPositionY() && hook.GetPositionY() < bmp.GetPositionY() + 85) {
+	if (hook.GetPositionX() > bmp.GetPositionX() && hook.GetPositionX() < bmp.GetPositionX() + 150) {
+		return true;
+	}
 }*/
 
-void CGameStateRun::GoldBackHome(GoldMine bmp, double angle) {
+
+bool hookcpp::GoldBackHome(GoldMine bmp, int frameindex) {
+	double angle = 340 - (10 * frameindex);
+	angle = angle * 3.1416 / 180;
+	
 	if (bmp.GetPositionY() <= 75) {//回到一定高度後回收
-		int v1 = Score_number[2].GetFrameIndexOfBitmap() + gold.Score() % 10;
+		/*int v1 = Score_number[2].GetFrameIndexOfBitmap() + gold.Score() % 10;
 		int v2 = Score_number[1].GetFrameIndexOfBitmap() + gold.Score() / 10 + v1 / 10;
 		int v3 = Score_number[0].GetFrameIndexOfBitmap() + v2 / 10;
 		Score_number[0].SetFrameIndexOfBitmap(v3);
 		Score_number[1].SetFrameIndexOfBitmap(v2);
-		Score_number[2].SetFrameIndexOfBitmap(v1);
-		tmp_treasure = 1;
+		Score_number[2].SetFrameIndexOfBitmap(v1);*/
+		return true;
 	}
 	else {
-		//要再乘以速度設定
+		//要再乘以速度設定(要跟鉤子的速度一樣
 		x = bmp.GetPositionX() - 10 * cos(angle);
 		y = bmp.GetPositionY() + 10 * sin(angle);
 		bmp.SetPosition(int(x), int(y));
+
+		return false; //程式繼續執行
 	}
 }

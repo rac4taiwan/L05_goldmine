@@ -24,7 +24,6 @@ namespace game_framework {
 		void SetPosition(int x, int y);
 		int GetPositionX();
 		int GetPositionY();
-		bool Overlap(CMovingBitmap hook, GoldMine bmp);
 	private:
 		int size = 0;
 		CMovingBitmap mine;
@@ -40,11 +39,24 @@ namespace game_framework {
 		CMovingBitmap mine;
 	};
 
-	class Tab : public CMovingBitmap {
+	class hookcpp : public CMovingBitmap {
 	public:
-		void UpdateObjectPosition(double angularAmplitude, double angularFrequency, double deltaTime);
-
+		hookcpp();
+		~hookcpp();
+		static void ReleaseTab(hookcpp hook, int angle);
+		static void RollTab(hookcpp hook, int angle);
+		static bool IsOverlap(hookcpp hook, int a, int b);
+		static bool GoldBackHome(GoldMine bmp, int frameindex);
+		void SetPosition(int x, int y);
+		int GetPositionX();
+		int GetPositionY();
+	private:
+		CMovingBitmap mine;
+		static double x;
+		static double y;
+		double angle;			//顯示目前角度
 	};
+	
 }
 
 #endif

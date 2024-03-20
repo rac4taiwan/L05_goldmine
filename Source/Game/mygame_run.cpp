@@ -59,12 +59,12 @@ void CGameStateRun::OnBeginState()
 		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
 		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp", 
 		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
-	thetab.SetTopLeft(375,75);
+	thetab.SetTopLeft(375, 75);
 	hook.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
 		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
-	hook.SetTopLeft(400 , 75);
+	hook.SetTopLeft(400, 75);
 
 	status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 }
@@ -103,23 +103,40 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	}
 	if (status == 0) {//鉤子擺動中
 		thetab.SetAnimation(100, false);
+		tmp_treasure = 1;//未碰到礦物
 	}
-	if (status == 1) {
+	if (status == 1) {//鉤子出發狩獵
+		//決定角度
 		frameindex = thetab.GetFrameIndexOfBitmap();
 		if (frameindex > 13)frameindex = 27 - frameindex;
 		hook.SetFrameIndexOfBitmap(frameindex - 1);
-		ReleaseTab(frameindex);
+
+		//為每個礦物寫for迴圈：gold[i]、tmp_treasure[i]
+		if (tmp_treasure == 1) {//礦物流浪中，檢查鉤子礦物是否重疊
+			if (hookcpp::IsOverlap(hook, gold.GetPositionX(), gold.GetPositionY())) {
+				tmp_treasure = 2;//狀態：碰到後回家路上
+				status = 2;
+			}
+		}
+		//迴圈結束
+		
+		//鉤子出發
+		hookcpp::ReleaseTab(hook, frameindex);
+
 	}
 	if (status == 2) {
-		RollTab(frameindex);
-	}
-	//if (tmp_treasure == 2) {//有碰到礦物且帶回家
-		//讓礦物飛回家
-		//GoldBackHome(gold, angle);
-	//}
+		//為每個礦物寫for迴圈：gold[i]、tmp_treasure[i]
+		if (tmp_treasure == 2) {//礦物在回家路上
+			if (hookcpp::GoldBackHome(gold, frameindex)) {
+				tmp_treasure = 0;
+			}
+			//觸發GoldBackHome，如果GoldBackHome執行完畢(return 1)
+		}
+		//迴圈結束
 
-	//如果按下選單按鈕 狀態改為3
-	//如果狀態為3 按下開始 狀態改為0
+		//鉤子回家
+		hookcpp::RollTab(hook, frameindex);
+	}
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定

@@ -74,11 +74,6 @@ int GoldMine::GetPositionY() {
 	return mine.GetTop();
 }
 
-bool GoldMine::Overlap(CMovingBitmap hook, GoldMine bmp) {
-	return mine.IsOverlap(hook, bmp);
-}
-
-
 // ---------------------Stone----------------------
 Stone::Stone() {
 
