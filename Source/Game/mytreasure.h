@@ -49,8 +49,8 @@ namespace game_framework {
 		void SetHook(int frameindex);
 		void Show();
 		void UnShow();
-		static void ReleaseTab(hookcpp hook, int angle);
-		static void RollTab(hookcpp hook, int angle);
+		static void ReleaseTab(hookcpp hook, int frameindex);
+		static void RollTab(hookcpp hook, int frameindex);
 		static bool IsOverlap(hookcpp hook, int a, int b);
 		static bool GoldBackHome(GoldMine bmp, int frameindex);
 		void SetPosition(int x, int y);

@@ -6,6 +6,7 @@
 #include "../Library/gameutil.h"
 #include "../Library/gamecore.h"
 #include "mygame.h"
+#include "mytreasure.h"
 
 using namespace game_framework;
 
@@ -107,10 +108,11 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		//決定角度
 		frameindex = thetab.GetFrameIndex();
 		if (frameindex > 13)frameindex = 27 - frameindex;
-		hook.SetHook(frameindex);
-		
+		//hook.SetHook(frameindex);
 		//鉤子出發
 		hookcpp::ReleaseTab(hook, frameindex);
+		double angle = 340 - (10 * frameindex);
+		angle = angle * 3.1416 / 180;
 	}
 
 	if (hook_status == 2) {
@@ -138,7 +140,11 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		}
 	}
 	if (nChar == VK_DOWN && hook_status == 0) {
+
 		hook_status = 1; //狀態：放線
+		//hook.SetPosition(0, 0);
+		//hookcpp::ReleaseTab(hook, frameindex);
+
 	}
 }
 
@@ -177,12 +183,15 @@ void CGameStateRun::OnShow()
 		Time.ShowBitmap();
 		Score.ShowBitmap();
 		if (hook_status == 0) {//鉤子擺動中
-			thetab.Show();
 			hook.UnShow();
+			thetab.Show();
+			//hook.Show();
 		}
 		else if (hook_status == 1 || hook_status == 2) {//鉤子出發
 			thetab.UnShow();
 			hook.Show();
+			//thetab.Show();
+
 		}
 		if (obj_status == 0) {//碰到礦物已帶回家	
 			gold.UnShow();

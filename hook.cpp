@@ -38,10 +38,11 @@ void hookcpp::LoadTheTab() {
 }
 
 void hookcpp::LoadHook() {
-	mine.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
+	/*mine.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
+		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));*/
+	mine.LoadBitmapByString({ "resources/test.bmp" }, RGB(255, 255, 255));
 }
 
 void hookcpp::SetHook(int frameindex) {
@@ -74,8 +75,8 @@ void hookcpp::ReleaseTab(hookcpp hook, int frameindex)
 {
 	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
-
-	if (hook.GetPositionX() + 150 > 900 || hook.GetPositionX() < 0 || hook.GetPositionY() + 100 > 600) {
+	hook.hookcpp::SetPosition(0, 0);
+	/*if (hook.GetPositionX() + 150 > 900 || hook.GetPositionX() < 0 || hook.GetPositionY() + 100 > 600) {
 		hook_status = 2;//鉤子到底了 回家吧
 	}
 	else {//鉤子繼續走
@@ -91,7 +92,7 @@ void hookcpp::ReleaseTab(hookcpp hook, int frameindex)
 			hook_status = 2;
 		}
 		//迴圈結束
-	}
+	}*/
 	
 }
 
