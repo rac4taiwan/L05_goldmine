@@ -52,6 +52,9 @@ namespace game_framework {
 		AUDIO_NTUT				// 2
 	};
 
+	extern int hook_status;			//設定鉤子狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+	extern int obj_status;			//設定礦物狀態
+
 	/////////////////////////////////////////////////////////////////////////////
 	// 這個class為遊戲的遊戲開頭畫面物件
 	// 每個Member function的Implementation都要弄懂
@@ -93,10 +96,6 @@ namespace game_framework {
 	protected:
 		void OnMove();									// 移動遊戲元素
 		void OnShow();									// 顯示這個狀態的遊戲畫面
-		void ReleaseTab(int angle);
-		void RollTab(int angle);
-		bool IsOverlap(CMovingBitmap bmp1, GoldMine bmp2);
-		void GoldBackHome(GoldMine bmp, double angle);
 	private:
 		CMovingBitmap Stage;
 		CMovingBitmap background;
@@ -105,7 +104,6 @@ namespace game_framework {
 		CMovingBitmap Times_up;
 		CMovingBitmap Score;
 		CMovingBitmap Score_number[3];
-		CMovingBitmap hook;//出發狩獵的鉤子
 		GoldMine gold;
 		int state = 0;
 		int tmp_status = 0;
@@ -113,12 +111,10 @@ namespace game_framework {
 		int count = 0;
 
 		/////////////顏湘芸的
-		double x;
-		double y;
-		int status = 1;							//設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
-		int frameindex;									//顯示目前禎索引值
-		double angle;										//顯示目前角度
-		CMovingBitmap thetab;//晃動中的鉤子
+		int frameindex;			//顯示目前禎索引值
+		hookcpp thetab;//晃動中的鉤子
+		hookcpp hook;//出發狩獵的鉤子
+
 	};
 
 	/////////////////////////////////////////////////////////////////////////////

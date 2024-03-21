@@ -74,10 +74,22 @@ int GoldMine::GetPositionY() {
 	return mine.GetTop();
 }
 
-bool GoldMine::Overlap(CMovingBitmap hook, GoldMine bmp) {
-	return mine.IsOverlap(hook, bmp);
-}
+bool GoldMine::GoldBackHome(int frameindex) {
+	double angle = 340 - (10 * frameindex);
+	angle = angle * 3.1416 / 180;
 
+	if (mine.GetTop() <= 75) {//回到一定高度後回收
+		return true;
+	}
+	else {
+		//要再乘以速度設定(要跟鉤子的速度一樣
+		double x = mine.GetLeft() - 10 * cos(angle);
+		double y = mine.GetTop() + 10 * sin(angle);
+		mine.SetTopLeft(int(x), int(y));
+
+		return false; //程式繼續執行
+	}
+}
 
 // ---------------------Stone----------------------
 Stone::Stone() {

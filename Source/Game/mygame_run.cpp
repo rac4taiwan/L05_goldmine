@@ -6,6 +6,7 @@
 #include "../Library/gameutil.h"
 #include "../Library/gamecore.h"
 #include "mygame.h"
+#include "mytreasure.h"
 
 using namespace game_framework;
 
@@ -52,22 +53,14 @@ void CGameStateRun::OnBeginState()
 	Score_number[2].SetFrameIndexOfBitmap(0);
 
 	// -------------
-	thetab.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" , "resources/hook_13.bmp",
-		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
-		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp", 
-		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
-	thetab.SetTopLeft(375,75);
-	hook.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
-	hook.SetTopLeft(400 , 75);
+	thetab.LoadTheTab();
+	hook.LoadHook();
 
-	status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+	hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+	obj_status = 1;//未碰到礦物
 }
+int game_framework::hook_status;
+int game_framework::obj_status;
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
@@ -101,25 +94,36 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			}
 		}
 	}
-	if (status == 0) {//鉤子擺動中
-		thetab.SetAnimation(100, false);
+	if (hook_status == 0) {//鉤子擺動中
+		thetab.SetAnimate(100, false);
 	}
-	if (status == 1) {
-		frameindex = thetab.GetFrameIndexOfBitmap();
-		if (frameindex > 13)frameindex = 27 - frameindex;
-		hook.SetFrameIndexOfBitmap(frameindex - 1);
-		ReleaseTab(frameindex);
-	}
-	if (status == 2) {
-		RollTab(frameindex);
-	}
-	//if (tmp_treasure == 2) {//有碰到礦物且帶回家
-		//讓礦物飛回家
-		//GoldBackHome(gold, angle);
-	//}
 
-	//如果按下選單按鈕 狀態改為3
-	//如果狀態為3 按下開始 狀態改為0
+	if (hook_status == 1) {//鉤子出發狩獵
+		//決定角度
+		frameindex = thetab.GetFrameIndex();
+		if (frameindex > 13)frameindex = 27 - frameindex;
+		hook.SetHook(frameindex);
+		//鉤子出發
+		hook.ReleaseTab(frameindex);
+
+	}
+
+	if (hook_status == 2) {
+		//鉤子回家
+		hook.RollTab(frameindex);
+	}
+	if (obj_status == 2) {
+		if (gold.GoldBackHome(frameindex) == 1) {
+			int v1 = Score_number[2].GetFrameIndexOfBitmap() + gold.Score() % 10;
+			int v2 = Score_number[1].GetFrameIndexOfBitmap() + gold.Score() / 10 + v1 / 10;
+			int v3 = Score_number[0].GetFrameIndexOfBitmap() + v2 / 10;
+			Score_number[0].SetFrameIndexOfBitmap(v3);
+			Score_number[1].SetFrameIndexOfBitmap(v2);
+			Score_number[2].SetFrameIndexOfBitmap(v1);
+			obj_status = 0;
+		}
+	}
+
 }
 
 void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
@@ -140,8 +144,8 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			Time_number[2].SetFrameIndexOfBitmap(9);
 		}
 	}
-	if (nChar == VK_DOWN && status == 0) {
-		status = 1; //狀態：放線
+	if (nChar == VK_DOWN && hook_status == 0) {
+		hook_status = 1; //狀態：放線
 	}
 }
 
@@ -179,19 +183,18 @@ void CGameStateRun::OnShow()
 		background.ShowBitmap();
 		Time.ShowBitmap();
 		Score.ShowBitmap();
-		if (status == 0) {//鉤子擺動中
-			thetab.ShowBitmap();
-			hook.UnshowBitmap();
+		if (hook_status == 0) {//鉤子擺動中
+			hook.UnShow();
+			thetab.Show();
 		}
-		else if (status == 1 || status == 2) {//鉤子出發
-			thetab.UnshowBitmap();
-			hook.ShowBitmap();
+		else if (hook_status == 1 || hook_status == 2) {//鉤子出發
+			thetab.UnShow();
+			hook.Show();
 		}
-		if (tmp_treasure == 0) {//碰到礦物已帶回家	
-			gold.UnShow();
-		}
-		else if (tmp_treasure == 1 || tmp_treasure == 2) {//未碰到礦物/碰到後回家路上
+		if (obj_status == 1 || obj_status == 2) {//未碰到礦物/碰到後回家路上
 			gold.Show();
+		}else if (obj_status == 0) {//碰到礦物已帶回家	
+			gold.UnShow();
 		}
 		if (Time_number[0].GetFrameIndexOfBitmap() == 0) {
 			Time_number[0].UnshowBitmap();
