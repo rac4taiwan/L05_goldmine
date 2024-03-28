@@ -35,9 +35,9 @@ void CGameStateInit::OnInit()
 
 void CGameStateInit::OnBeginState()
 {
-	//Cover.LoadBitmapByString({ "resources/Cover.bmp" });
-	//Cover.SetTopLeft(0, 0);
-	test.Setting();
+	Cover.LoadBitmapByString({ "resources/Cover.bmp" });
+	Cover.SetTopLeft(0, 0);
+	//test.Setting();
 }
 
 void CGameStateInit::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -52,6 +52,6 @@ void CGameStateInit::OnLButtonDown(UINT nFlags, CPoint point)
 
 void CGameStateInit::OnShow()
 {
-	//Cover.ShowBitmap();
-	test.Show();
+	Cover.ShowBitmap();
+	//test.Show();
 }

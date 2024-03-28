@@ -74,6 +74,14 @@ int GoldMine::GetPositionY() {
 	return mine.GetTop();
 }
 
+int GoldMine::GetWidth() {
+	return mine.GetWidth();
+}
+
+int GoldMine::GetHeight() {
+	return mine.GetHeight();
+}
+
 bool GoldMine::GoldBackHome(int frameindex) {
 	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
@@ -89,6 +97,14 @@ bool GoldMine::GoldBackHome(int frameindex) {
 
 		return false; //程式繼續執行
 	}
+}
+
+int GoldMine::GetObjStatus() {
+	return obj_status;
+}
+
+void GoldMine::SetObjStatus(int value) {
+	obj_status = value;
 }
 
 // ---------------------Stone----------------------
