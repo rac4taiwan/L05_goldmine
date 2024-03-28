@@ -24,7 +24,8 @@ CGameStateRun::~CGameStateRun()
 
 void CGameStateRun::OnBeginState()
 {
-	Stage.LoadBitmapByString({ "resources/Stage1_0.bmp", "resources/Stage1_1.bmp", "resources/Stage1_2.bmp", "resources/Stage1_3.bmp" }, RGB(0,0,0));
+	gm.Setting();
+	/*Stage.LoadBitmapByString({ "resources/Stage1_0.bmp", "resources/Stage1_1.bmp", "resources/Stage1_2.bmp", "resources/Stage1_3.bmp" }, RGB(0,0,0));
 	Stage.SetFrameIndexOfBitmap(0);
 	Stage.SetTopLeft(0, 0);
 	background.LoadBitmapByString({ "resources/background.bmp" });
@@ -40,8 +41,6 @@ void CGameStateRun::OnBeginState()
 	Time_number[2].SetFrameIndexOfBitmap(3);
 	Times_up.LoadBitmapByString({ "resources/times_up.bmp" }, RGB(255, 255, 255));
 	Times_up.SetTopLeft(60, 50);
-	gold.SetSize(2);
-	gold.SetPosition(390, 300);
 	Score.LoadBitmapByString({ "resources/Score.bmp" }, RGB(255, 255, 255));
 	Score.SetTopLeft(-10, 30);
 	for (int i = 0; i < 3; i++) {
@@ -50,21 +49,24 @@ void CGameStateRun::OnBeginState()
 	}
 	Score_number[0].SetFrameIndexOfBitmap(0);
 	Score_number[1].SetFrameIndexOfBitmap(0);
-	Score_number[2].SetFrameIndexOfBitmap(0);
+	Score_number[2].SetFrameIndexOfBitmap(0);*/
 
+	/*gold.SetSize(2);
+	gold.SetPosition(390, 300);*/
 	// -------------
-	thetab.LoadTheTab();
-	hook.LoadHook();
+	//thetab.LoadTheTab();
+	//hook.LoadHook();
+	hook.Setting();
 
-	hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
-	obj_status = 1;//未碰到礦物
+	//hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
+	//obj_status = 1;//未碰到礦物
 }
-int game_framework::hook_status;
-int game_framework::obj_status;
+//int game_framework::hook_status;
+//int game_framework::obj_status;
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
-	if (state == 1) {
+	/*if (state == 1) {
 		count += 1;
 		if (count == 30) {
 			count = 0;
@@ -93,8 +95,9 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				}
 			}
 		}
-	}
-	if (hook_status == 0) {//鉤子擺動中
+	}*/
+	gm.OnMove();
+	/*if (hook_status == 0) {//鉤子擺動中
 		thetab.SetAnimate(100, false);
 	}
 
@@ -111,8 +114,22 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	if (hook_status == 2) {
 		//鉤子回家
 		hook.RollTab(frameindex);
+	}*/
+
+	hook.OnMove();
+	bool check;
+	for (int i = 0; i < int(gold.size()); i++) {
+		if (gold[i]->GetObjStatus() == 1) {
+			check = hook.IsOverlap(gold[i]->GetPositionX(), gold[i]->GetPositionY(), gold[i]->GetWidth(), gold[i]->GetHeight());
+			if (check) {
+				if (gold[i]->GoldBackHome(hook.GetFrameIndex()) && gold[i]->GetObjStatus() == 1) {
+					gm.GetPoint(gold[i]->Score());
+					gold[i]->SetObjStatus(0);
+				}
+			}
+		}
 	}
-	if (obj_status == 2) {
+	/*if (obj_status == 2) {
 		if (gold.GoldBackHome(frameindex) == 1) {
 			int v1 = Score_number[2].GetFrameIndexOfBitmap() + gold.Score() % 10;
 			int v2 = Score_number[1].GetFrameIndexOfBitmap() + gold.Score() / 10 + v1 / 10;
@@ -120,9 +137,10 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 			Score_number[0].SetFrameIndexOfBitmap(v3);
 			Score_number[1].SetFrameIndexOfBitmap(v2);
 			Score_number[2].SetFrameIndexOfBitmap(v1);
+			gm.GetPoint(gold.Score());
 			obj_status = 0;
 		}
-	}
+	}*/
 
 }
 
@@ -133,7 +151,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	if (nChar == VK_RETURN) {
+	/*if (nChar == VK_RETURN) {
 		if (state == 0) {
 			state = 1;
 		}
@@ -143,10 +161,27 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 			Time_number[1].SetFrameIndexOfBitmap(2);
 			Time_number[2].SetFrameIndexOfBitmap(9);
 		}
+	}*/
+	level = gm.OnKeyDown(nChar, nRepCnt, nFlags);
+	if (level == 1) {
+		for (int i = 0; i < 5; i++) {
+			gold.push_back(new GoldMine);
+		}
+		gold[0]->SetSize(1);
+		gold[0]->SetPosition(100, 200);
+		gold[1]->SetSize(2);
+		gold[1]->SetPosition(200, 350);
+		gold[2]->SetSize(3);
+		gold[2]->SetPosition(450, 320);
+		gold[3]->SetSize(1);
+		gold[3]->SetPosition(700, 280);
+		gold[4]->SetSize(2);
+		gold[4]->SetPosition(550, 150);
 	}
-	if (nChar == VK_DOWN && hook_status == 0) {
+	/*if (nChar == VK_DOWN && hook_status == 0) {
 		hook_status = 1; //狀態：放線
-	}
+	}*/
+	hook.OnKeyDown(nChar, nRepCnt, nFlags);
 }
 
 void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
@@ -176,11 +211,12 @@ void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// 處理滑鼠的動作
 
 void CGameStateRun::OnShow()
 {
-	if (state == 0) {//選單畫面
+	/*if (state == 0) {//選單畫面
 		Stage.ShowBitmap();
-	}
-	else if (state == 1) {//遊戲中
-		background.ShowBitmap();
+	}*/
+	gm.Show();
+	if (gm.GetNowStage() == 1) {//遊戲中
+		/*background.ShowBitmap();
 		Time.ShowBitmap();
 		Score.ShowBitmap();
 		if (hook_status == 0) {//鉤子擺動中
@@ -190,13 +226,22 @@ void CGameStateRun::OnShow()
 		else if (hook_status == 1 || hook_status == 2) {//鉤子出發
 			thetab.UnShow();
 			hook.Show();
-		}
-		if (obj_status == 1 || obj_status == 2) {//未碰到礦物/碰到後回家路上
+		}*/
+		hook.OnShow();
+		/*if (obj_status == 1 || obj_status == 2) {//未碰到礦物/碰到後回家路上
 			gold.Show();
 		}else if (obj_status == 0) {//碰到礦物已帶回家	
 			gold.UnShow();
+		}*/
+		for (int i = 0; i < int(gold.size()); i++) {
+			if (gold[i]->GetObjStatus() == 1) {//未碰到礦物/碰到後回家路上
+				gold[i]->Show();
+			}
+			else {//碰到礦物已帶回家	
+				gold[i]->UnShow();
+			}
 		}
-		if (Time_number[0].GetFrameIndexOfBitmap() == 0) {
+		/*if (Time_number[0].GetFrameIndexOfBitmap() == 0) {
 			Time_number[0].UnshowBitmap();
 			if (Time_number[1].GetFrameIndexOfBitmap() == 0) {
 				Time_number[1].UnshowBitmap();
@@ -226,9 +271,9 @@ void CGameStateRun::OnShow()
 				Score_number[i].ShowBitmap();
 			}
 		}
-		Score_number[2].ShowBitmap();
+		Score_number[2].ShowBitmap();*/
 	}
-	else if (state == 2) {
+	/*else if (state == 2) {
 		Times_up.ShowBitmap();
-	}
+	}*/
 }

@@ -19,57 +19,71 @@ hookcpp::~hookcpp() {
 
 }
 
-void hookcpp::Show() {
-	mine.ShowBitmap();
-}
-
-void hookcpp::UnShow() {
-	mine.UnshowBitmap();
-}
-
-void hookcpp::SetPosition(int x, int y) {
-	mine.SetTopLeft(x, y);
-}
-
-void hookcpp::LoadTheTab() {
-	mine.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
+void hookcpp::Setting() {
+	hook_stay.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
 		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" , "resources/hook_13.bmp",
 		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
 		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp",
 		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
-	mine.SetTopLeft(375, 75);
-}
+	hook_stay.SetTopLeft(375, 75);
 
-void hookcpp::LoadHook() {
-	mine.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
+	hook_attack.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
 		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
-	mine.SetTopLeft(400, 75);
+	hook_attack.SetTopLeft(400, 75);
+
+	hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 }
 
-void hookcpp::SetHook(int frameindex) {
-	mine.SetFrameIndexOfBitmap(frameindex);
+void hookcpp::OnMove() {
+	if (hook_status == 0) {//鉤子擺動中
+		hook_stay.SetAnimation(100, false);
+	}
+	else if (hook_status == 1) {//鉤子出發狩獵
+		//決定角度
+		//frameindex = hook_stay.GetFrameIndex();
+		frameindex = hook_stay.GetFrameIndexOfBitmap();
+		if (frameindex > 13)frameindex = 27 - frameindex;
+		//hook.SetHook(frameindex);
+		hook_attack.SetFrameIndexOfBitmap(frameindex);
+		//鉤子出發
+		this->ReleaseTab(frameindex);
+
+	}
+
+	if (hook_status == 2) {
+		//鉤子回家
+		this->RollTab(frameindex);
+	}
 }
 
-
-
-int hookcpp::GetPositionX() {
-	return mine.GetLeft();
+void hookcpp::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	if (nChar == VK_DOWN && hook_status == 0) {
+		hook_status = 1; //狀態：放線
+	}
 }
 
-int hookcpp::GetPositionY() {
-	return mine.GetTop();
+void hookcpp::OnShow() {
+	if (hook_status == 0) {//鉤子擺動中
+		hook_attack.UnshowBitmap();
+		hook_stay.ShowBitmap();
+	}
+	else if (hook_status == 1 || hook_status == 2) {//鉤子出發
+		hook_stay.UnshowBitmap();
+		hook_attack.ShowBitmap();
+	}
 }
 
 int hookcpp::GetFrameIndex() {
-	return mine.GetFrameIndexOfBitmap();
+	frameindex = hook_attack.GetFrameIndexOfBitmap();
+	return frameindex;
 }
 
 void hookcpp::SetAnimate(int delay, bool once) {
-	mine.SetAnimation(delay, once);
+	hook_stay.SetAnimation(delay, once);
 }
 
 //-----------------------------
@@ -78,23 +92,23 @@ void hookcpp::ReleaseTab(int frameindex)
 {
 	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
-	if (mine.GetLeft() + 150 > 900 || mine.GetLeft() < 0 || mine.GetTop() + 100 > 600) {
+	if (hook_attack.GetLeft() + 150 > 900 || hook_attack.GetLeft() < 0 || hook_attack.GetTop() + 100 > 600) {
 		hook_status = 2;//鉤子到底了 回家吧
 	}
 	else {//鉤子繼續走
-		x = mine.GetLeft() + 10 * cos(angle);
-		y = mine.GetTop() - 10 * sin(angle);
-		mine.SetTopLeft(int(x), int(y));
+		x = hook_attack.GetLeft() + 10 * cos(angle);
+		y = hook_attack.GetTop() - 10 * sin(angle);
+		hook_attack.SetTopLeft(int(x), int(y));
 	}
 	
-	if (obj_status == 1) {//礦物流浪中，檢查鉤子礦物是否重疊
+	/*if (obj_status == 1) {//礦物流浪中，檢查鉤子礦物是否重疊
 		//為每個礦物寫for迴圈：gold[i]、obj_status[i]
 		if (IsOverlap(390, 300)) {
 			obj_status = 2;//狀態：碰到後回家路上
 			hook_status = 2;
 		}
 		//迴圈結束
-	}
+	}*/
 	
 }
 
@@ -103,21 +117,30 @@ void hookcpp::RollTab(int frameindex)
 	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
 
-	if (mine.GetTop() <= 75) {//回到一定高度後回收
+	if (hook_attack.GetTop() <= 75) {//回到一定高度後回收
 		hook_status = 0;
-		mine.SetTopLeft(400, 75);
+		hook_attack.SetTopLeft(400, 75);
 	}
 	else {
 		//要再乘以速度設定
-		x = mine.GetLeft() - 10 * cos(angle);
-		y = mine.GetTop() + 10 * sin(angle);
-		mine.SetTopLeft(int(x), int(y));
+		x = hook_attack.GetLeft() - 10 * cos(angle);
+		y = hook_attack.GetTop() + 10 * sin(angle);
+		hook_attack.SetTopLeft(int(x), int(y));
 	}	
 }
 
-bool hookcpp::IsOverlap(int a, int b){
-	if (mine.GetTop() > b && mine.GetTop() < b + 72) {
-		if (mine.GetLeft() > a && mine.GetLeft() < a + 81) {
+bool hookcpp::IsOverlap(int ox, int oy, int ow, int oh){
+	double angle = 340 - (10 * hook_attack.GetFrameIndexOfBitmap());
+	angle = angle * 3.1416 / 180;
+	double hx = hook_attack.GetLeft() + 30 + (hook_attack.GetWidth() / 2) + 10 * cos(angle);
+	double hy = hook_attack.GetTop() - 10 * sin(angle);
+	double ocx = ox + (double(ow) / 2);
+	double ocy = oy + (double(oh) / 2);
+
+
+	if (hy > ocy - 100 && hy < ocy) {
+		if (hx > ocx && hx < ocx + 81) {
+			hook_status = 2;
 			return true;
 		}
 	}

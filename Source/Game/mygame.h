@@ -104,11 +104,13 @@ namespace game_framework {
 		CMovingBitmap Times_up;
 		CMovingBitmap Score;
 		CMovingBitmap Score_number[3];
-		GoldMine gold;
+		vector<GoldMine*> gold;
+		MapFrame gm;
 		int state = 0;
 		int tmp_status = 0;
 		int tmp_treasure = 1;
 		int count = 0;
+		int level = 0;
 
 		/////////////顏湘芸的
 		int frameindex;			//顯示目前禎索引值
