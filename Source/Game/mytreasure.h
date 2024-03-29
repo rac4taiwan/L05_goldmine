@@ -69,19 +69,6 @@ namespace game_framework {
 		int hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 		int frameindex;
 	};
-
-	/*class hookmoving : public hookcpp {
-	public:
-		static void ReleaseTab(hookcpp hook, int frameindex);
-		static void RollTab(hookcpp hook, int frameindex);
-		static bool IsOverlap(hookcpp hook, int a, int b);
-		static bool GoldBackHome(GoldMine bmp, int frameindex);
-	private:
-		CMovingBitmap mine;
-		static double x;
-		static double y;
-		double angle;			//顯示目前角度
-	};*/
 }
 
 #endif

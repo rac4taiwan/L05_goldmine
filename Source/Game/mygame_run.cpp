@@ -104,7 +104,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	if (hook_status == 1) {//鉤子出發狩獵
 		//決定角度
 		frameindex = thetab.GetFrameIndex();
-		if (frameindex > 13)frameindex = 27 - frameindex;
+		if (frameindex > 15)frameindex = 31 - frameindex;
 		hook.SetHook(frameindex);
 		//鉤子出發
 		hook.ReleaseTab(frameindex);
@@ -119,13 +119,14 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	hook.OnMove();
 	bool check;
 	for (int i = 0; i < int(gold.size()); i++) {
-		if (gold[i]->GetObjStatus() == 1) {
+		if (gold[i]->GetObjStatus() == 1 || gold[i]->GetObjStatus() == 2) {
 			check = hook.IsOverlap(gold[i]->GetPositionX(), gold[i]->GetPositionY(), gold[i]->GetWidth(), gold[i]->GetHeight());
-			if (check) {
-				if (gold[i]->GoldBackHome(hook.GetFrameIndex()) && gold[i]->GetObjStatus() == 1) {
+			if (check) {//確認有重疊到
+				gold[i]->SetObjStatus(2);
+			}
+			if (gold[i]->GoldBackHome(hook.GetFrameIndex()) && gold[i]->GetObjStatus() == 2) {//礦回原點的時候計分
 					gm.GetPoint(gold[i]->Score());
 					gold[i]->SetObjStatus(0);
-				}
 			}
 		}
 	}
@@ -234,7 +235,7 @@ void CGameStateRun::OnShow()
 			gold.UnShow();
 		}*/
 		for (int i = 0; i < int(gold.size()); i++) {
-			if (gold[i]->GetObjStatus() == 1) {//未碰到礦物/碰到後回家路上
+			if (gold[i]->GetObjStatus() == 1 || gold[i]->GetObjStatus() == 2) {//未碰到礦物/碰到後回家路上
 				gold[i]->Show();
 			}
 			else {//碰到礦物已帶回家	

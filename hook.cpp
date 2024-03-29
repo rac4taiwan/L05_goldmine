@@ -20,20 +20,22 @@ hookcpp::~hookcpp() {
 }
 
 void hookcpp::Setting() {
-	hook_stay.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" , "resources/hook_13.bmp",
-		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
-		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp",
-		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
-	hook_stay.SetTopLeft(375, 75);
+	hook_stay.LoadBitmapByString({ "resources/hook_2.bmp", "resources/hook_3.bmp","resources/hook_4.bmp",
+		"resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",	"resources/hook_8.bmp",
+		"resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp", "resources/hook_12.bmp",
+		"resources/hook_13.bmp", "resources/hook_14.bmp", "resources/hook_15.bmp", "resources/hook_16.bmp" ,
+		"resources/hook_17.bmp" ,"resources/hook_16.bmp","resources/hook_15.bmp" , "resources/hook_14.bmp" ,
+		"resources/hook_13.bmp", "resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp",
+		"resources/hook_9.bmp",	"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp",
+		"resources/hook_5.bmp", "resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp"}, RGB(255, 255, 255));
+	hook_stay.SetTopLeft(385, 75);
 
-	hook_attack.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
+	hook_attack.LoadBitmapByString({ "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
-	hook_attack.SetTopLeft(400, 75);
+		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp", "resources/hook_15.bmp", 
+		"resources/hook_16.bmp" , "resources/hook_17.bmp" }, RGB(255, 255, 255));
+	hook_attack.SetTopLeft(385, 75);
 
 	hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 }
@@ -46,7 +48,7 @@ void hookcpp::OnMove() {
 		//決定角度
 		//frameindex = hook_stay.GetFrameIndex();
 		frameindex = hook_stay.GetFrameIndexOfBitmap();
-		if (frameindex > 13)frameindex = 27 - frameindex;
+		if (frameindex > 15)frameindex = 31 - frameindex;
 		//hook.SetHook(frameindex);
 		hook_attack.SetFrameIndexOfBitmap(frameindex);
 		//鉤子出發
@@ -114,12 +116,14 @@ void hookcpp::ReleaseTab(int frameindex)
 
 void hookcpp::RollTab(int frameindex)
 {
-	double angle = 340 - (10 * frameindex);
-	angle = angle * 3.1416 / 180;
+	//double angle = 340 - (10 * frameindex);
+	//angle = angle * 3.1416 / 180;
 
-	if (hook_attack.GetTop() <= 75) {//回到一定高度後回收
+	double angle = atan2(75 - hook_attack.GetTop(), hook_attack.GetLeft() - 385);//xy對調：會畫圓
+
+	if (hook_attack.GetTop() <= 75 && hook_attack.GetLeft() > 310) {//回到一定高度後回收
 		hook_status = 0;
-		hook_attack.SetTopLeft(400, 75);
+		hook_attack.SetTopLeft(385, 75);
 	}
 	else {
 		//要再乘以速度設定
