@@ -16,19 +16,19 @@ namespace game_framework {
 	public:
 		GoldMine();
 		~GoldMine();
-		virtual double Catch() override;
+		double Catch() override;
 		virtual int Score() override;
 		virtual void SetSize(int s);
-		void Show();
-		void UnShow();
-		void SetPosition(int x, int y);
-		int GetPositionX();
-		int GetPositionY();
-		int GetWidth();
-		int GetHeight();
-		bool GoldBackHome(int frameindex);
-		int GetObjStatus();
-		void SetObjStatus(int value);
+		virtual void Show();
+		virtual void UnShow();
+		virtual void SetPosition(int x, int y);
+		virtual int GetPositionX();
+		virtual int GetPositionY();
+		virtual int GetWidth();
+		virtual int GetHeight();
+		virtual bool GoldBackHome(int frameindex);
+		virtual int GetObjStatus();
+		virtual void SetObjStatus(int value);
 	private:
 		int size = 0;
 		CMovingBitmap mine;
@@ -36,14 +36,27 @@ namespace game_framework {
 		int obj_status = 1;
 	};
 
-	class Stone : GoldMine {
+	class Stone : public GoldMine {
 	public:
 		Stone();
 		~Stone();
-		virtual void SetSize(int s) override;
+		void SetSize(int s) override;
+		int Score() override;
+		void SetPosition(int x, int y) override;
+		void Show() override;
+		void UnShow() override;
+		int GetPositionX() override;
+		int GetPositionY() override;
+		int GetWidth() override;
+		int GetHeight() override;
+		bool GoldBackHome(int frameindex) override;
+		int GetObjStatus() override;
+		void SetObjStatus(int value) override;
 	private:
 		int size = 0;
 		CMovingBitmap mine;
+		int state = 0;
+		int obj_status = 1;
 	};
 
 
@@ -69,6 +82,19 @@ namespace game_framework {
 		int hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 		int frameindex;
 	};
+
+	/*class hookmoving : public hookcpp {
+	public:
+		static void ReleaseTab(hookcpp hook, int frameindex);
+		static void RollTab(hookcpp hook, int frameindex);
+		static bool IsOverlap(hookcpp hook, int a, int b);
+		static bool GoldBackHome(GoldMine bmp, int frameindex);
+	private:
+		CMovingBitmap mine;
+		static double x;
+		static double y;
+		double angle;			//顯示目前角度
+	};*/
 }
 
 #endif
