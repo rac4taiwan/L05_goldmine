@@ -20,6 +20,7 @@ hookcpp::~hookcpp() {
 }
 
 void hookcpp::Setting() {
+	// 載入鉤子擺動的圖片
 	hook_stay.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
@@ -29,6 +30,7 @@ void hookcpp::Setting() {
 		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
 	hook_stay.SetTopLeft(375, 75);
 
+	// 載入發射鉤子的圖片
 	hook_attack.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
 		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
 		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
@@ -113,8 +115,8 @@ void hookcpp::RollTab(int frameindex)
 	}
 	else {
 		//要再乘以速度設定
-		x = hook_attack.GetLeft() - 10 * cos(angle);
-		y = hook_attack.GetTop() + 10 * sin(angle);
+		x = hook_attack.GetLeft() - 10 * cos(angle)*speed;
+		y = hook_attack.GetTop() + 10 * sin(angle)*speed;
 		hook_attack.SetTopLeft(int(x), int(y));
 	}	
 }
@@ -134,4 +136,8 @@ bool hookcpp::IsOverlap(int ox, int oy, int ow, int oh){
 		}
 	}
 	return false;
+}
+
+void hookcpp::SetSpeed(double value) {
+	speed = value;
 }

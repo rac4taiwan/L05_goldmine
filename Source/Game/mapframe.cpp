@@ -23,12 +23,16 @@ void MapFrame::Setting() {
 	Stage[1].LoadBitmapByString({ "resources/Stage2_0.bmp", "resources/Stage2_1.bmp", "resources/Stage2_2.bmp", "resources/Stage2_3.bmp" }, RGB(0, 0, 0));
 	Stage[1].SetFrameIndexOfBitmap(0);
 	Stage[1].SetTopLeft(200, 0);*/
-	for (int i = 0; i < total_level; i++) {
+
+	// 設定關卡圖案
+	for (int i = 0; i < total_level; i++) { 
 		Stage[i].Setting(i+1);
 		Stage[i].SetTopLeft(180 * i, 0);
 	}
+	// 載入背景圖
 	Background.LoadBitmapByString({ "resources/background_0.bmp","resources/background.bmp" }, RGB(255,255,255));
 	Background.SetTopLeft(0, 0);
+	// 載入遊戲進行時的時間
 	Time_label.LoadBitmapByString({ "resources/Time.bmp" }, RGB(255, 255, 255));
 	Time_label.SetTopLeft(670, 30);
 	for (int i = 0; i < 3; i++) {
@@ -38,8 +42,10 @@ void MapFrame::Setting() {
 	Time_number[0].SetFrameIndexOfBitmap(0);
 	Time_number[1].SetFrameIndexOfBitmap(2);
 	Time_number[2].SetFrameIndexOfBitmap(3);
-	Finish.LoadBitmapByString({ "resources/times_up.bmp" }, RGB(255, 255, 255));
-	Finish.SetTopLeft(60, 50);
+	//Finish.LoadBitmapByString({ "resources/times_up.bmp" }, RGB(255, 255, 255));
+	//Finish.SetTopLeft(60, 50);
+
+	// 載入遊戲進行時的分數
 	Score_label.LoadBitmapByString({ "resources/Score.bmp" }, RGB(255, 255, 255));
 	Score_label.SetTopLeft(-10, 30);
 	for (int i = 0; i < 3; i++) {
@@ -52,8 +58,11 @@ void MapFrame::Setting() {
 }
 
 void MapFrame::OnMove() {
+	// state ==  0 為選關畫面; 1 為遊戲進行狀態; 2 為結算畫面
 	if (state == 1) {
 		count += 1;
+		// count 為計時器，每30個count為一秒
+		// number[0]、[1]、[2]分別為百、十、個位數，若百位數為0則隱藏，十位數同理
 		if (count == 30) {
 			count = 0;
 			int number[3];
@@ -76,7 +85,7 @@ void MapFrame::OnMove() {
 					}
 					else {
 						Time_number[2].SetFrameIndexOfBitmap(0);
-						state = 2;
+						state = 2;  // 時間到，跳至結算畫面
 					}
 				}
 			}

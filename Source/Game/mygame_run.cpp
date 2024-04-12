@@ -24,23 +24,28 @@ CGameStateRun::~CGameStateRun()
 
 void CGameStateRun::OnBeginState()
 {
-	gm.Setting();
-	hook.Setting();
+	gm.Setting();  //跳至mapframe::Setting
+	hook.Setting(); //跳至hookcpp::Setting
 }
 
 
 void CGameStateRun::OnMove()							// 移動遊戲元素
 {
-	gm.OnMove();
+	gm.OnMove();  // 跳至mapframe::OnMove
 
-	hook.OnMove();
+	hook.OnMove(); // 跳至hookcpp::OnMove
 	bool check;
+	// 每個礦物的執行式
 	for (int i = 0; i < int(gold.size()); i++) {
+		// 如果礦物還在場上
 		if (gold[i]->GetObjStatus() == 1 || gold[i]->GetObjStatus() == 2) {
+			//確認礦物與鉤子有接觸
 			check = hook.IsOverlap(gold[i]->GetPositionX(), gold[i]->GetPositionY(), gold[i]->GetWidth(), gold[i]->GetHeight());
 			if (check) {//確認有重疊到
 				gold[i]->SetObjStatus(2);
+				hook.SetSpeed(gold[i]->Catch());
 			}
+			// 確認礦物已回原點，需計算分數或時間等
 			if (gold[i]->GoldBackHome(atan2(75 - gold[i]->GetPositionY(), 385 - gold[i]->GetPositionX())) && gold[i]->GetObjStatus() == 2) {//礦回原點的時候計分
 				gm.GetPoint(gold[i]->Score());
 				gold[i]->SetObjStatus(0);
@@ -61,6 +66,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 				if (score >= 0) {
 					gm.GetPoint(stone[i]->Score());
 				}
+				// 分數小於零則進入結算
 				else {
 					score = 0;
 					gm.ChangeState(2);
@@ -99,6 +105,7 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 	}
 
+	// 若進入結算畫面，需傳分數給mapframe  (即gm)，並刪除礦物陣列裡的物件
 	if (gm.IsOver()) {
 		gm.SendScore(score);
 		for (int i = 0; i < int(gold.size()); i++) {
@@ -125,7 +132,7 @@ void CGameStateRun::OnInit()  								// 遊戲的初值及圖形設定
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-
+	// 關卡設計在這裡
 	level = gm.OnKeyDown(nChar, nRepCnt, nFlags);
 	if (level == 1) {
 		score = 0;

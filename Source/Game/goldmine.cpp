@@ -29,10 +29,10 @@ double GoldMine::Catch() {
 		return 0.95;
 	}
 	else if (size == 2) {
-		return 0.5;
+		return 0.75;
 	}
 	else if (size == 3) {
-		return 0.8;
+		return 0.5;
 	}
 	else {
 		return 1.0;
@@ -90,8 +90,19 @@ bool GoldMine::GoldBackHome(double angle) {
 	}
 	else if (obj_status == 2) {
 		//要再乘以速度設定(要跟鉤子的速度一樣
-		double x = mine.GetLeft() + 10 * cos(angle);
-		double y = mine.GetTop() + 10 * sin(angle);
+		double x, y;
+		if (size == 1) {
+			x = mine.GetLeft() + 10 * cos(angle) * 0.95;
+			y = mine.GetTop() + 10 * sin(angle) * 0.95;
+		}
+		else if (size == 2) {
+			x = mine.GetLeft() + 10 * cos(angle) * 0.75;
+			y = mine.GetTop() + 10 * sin(angle) * 0.75;
+		}
+		else {
+			x = mine.GetLeft() + 10 * cos(angle) * 0.5;
+			y = mine.GetTop() + 10 * sin(angle) * 0.5;
+		}
 		mine.SetTopLeft(int(x), int(y));
 
 	}
