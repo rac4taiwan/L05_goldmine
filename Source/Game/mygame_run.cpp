@@ -36,32 +36,65 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	hook.OnMove();
 	bool check;
 	for (int i = 0; i < int(gold.size()); i++) {
-		if (gold[i]->GetObjStatus() == 1) {
+		if (gold[i]->GetObjStatus() == 1 || gold[i]->GetObjStatus() == 2) {
 			check = hook.IsOverlap(gold[i]->GetPositionX(), gold[i]->GetPositionY(), gold[i]->GetWidth(), gold[i]->GetHeight());
-			if (check) {
-				if (gold[i]->GoldBackHome(hook.GetFrameIndex()) && gold[i]->GetObjStatus() == 1) {
-					gm.GetPoint(gold[i]->Score());
-					gold[i]->SetObjStatus(0);
-					score += gold[i]->Score();
-				}
+			if (check) {//確認有重疊到
+				gold[i]->SetObjStatus(2);
+			}
+			if (gold[i]->GoldBackHome(atan2(75 - gold[i]->GetPositionY(), 385 - gold[i]->GetPositionX())) && gold[i]->GetObjStatus() == 2) {//礦回原點的時候計分
+				gm.GetPoint(gold[i]->Score());
+				gold[i]->SetObjStatus(0);
+				score += gold[i]->Score();
+
 			}
 		}
 	}
 	for (int i = 0; i < int(stone.size()); i++) {
-		if (stone[i]->GetObjStatus() == 1) {
+		if (stone[i]->GetObjStatus() == 1 || stone[i]->GetObjStatus() == 2) {
 			check = hook.IsOverlap(stone[i]->GetPositionX(), stone[i]->GetPositionY(), stone[i]->GetWidth(), stone[i]->GetHeight());
 			if (check) {
-				if (stone[i]->GoldBackHome(hook.GetFrameIndex()) && stone[i]->GetObjStatus() == 1) {
-					stone[i]->SetObjStatus(0);
-					score += stone[i]->Score();
-					if (score >= 0) {
-						gm.GetPoint(stone[i]->Score());
-					}
-					else {
-						score = 0;
-						gm.ChangeState(2);
-					}
+				stone[i]->SetObjStatus(2);
+			}
+			if (stone[i]->GoldBackHome(atan2(75 - stone[i]->GetPositionY(), 385 - stone[i]->GetPositionX())) && stone[i]->GetObjStatus() == 2) {
+				stone[i]->SetObjStatus(0);
+				score += stone[i]->Score();
+				if (score >= 0) {
+					gm.GetPoint(stone[i]->Score());
 				}
+				else {
+					score = 0;
+					gm.ChangeState(2);
+				}
+			}
+		}
+	}
+	for (int i = 0; i < int(diamond.size()); i++) {
+		if (diamond[i]->GetObjStatus() == 1 || diamond[i]->GetObjStatus() == 2) {
+			check = hook.IsOverlap(diamond[i]->GetPositionX(), diamond[i]->GetPositionY(), diamond[i]->GetWidth(), diamond[i]->GetHeight());
+			if (check) {//確認有重疊到
+				diamond[i]->SetObjStatus(2);
+			}
+			if (diamond[i]->GoldBackHome(atan2(75 - diamond[i]->GetPositionY(), 385 - diamond[i]->GetPositionX())) && diamond[i]->GetObjStatus() == 2) {//礦回原點的時候計分
+				/*這邊要改成時間*/
+				gm.GetPoint(diamond[i]->Time());
+				diamond[i]->SetObjStatus(0);
+				score += diamond[i]->Time();
+
+			}
+		}
+	}
+	for (int i = 0; i < int(can.size()); i++) {
+		if (can[i]->GetObjStatus() == 1 || can[i]->GetObjStatus() == 2) {
+			check = hook.IsOverlap(can[i]->GetPositionX(), can[i]->GetPositionY(), can[i]->GetWidth(), can[i]->GetHeight());
+			if (check) {//確認有重疊到
+				can[i]->SetObjStatus(2);
+			}
+			if (can[i]->GoldBackHome(atan2(75 - can[i]->GetPositionY(), 385 - can[i]->GetPositionX())) && can[i]->GetObjStatus() == 2) {//礦回原點的時候計分
+				/*這邊要改成時間*/
+				gm.GetPoint(can[i]->Time());
+				can[i]->SetObjStatus(0);
+				score += can[i]->Time();
+
 			}
 		}
 	}
@@ -73,6 +106,12 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 		}
 		for (int i = 0; i < int(stone.size()); i++) {
 			stone.pop_back();
+		}
+		for (int i = 0; i < int(diamond.size()); i++) {
+			diamond.pop_back();
+		}
+		for (int i = 0; i < int(can.size()); i++) {
+			can.pop_back();
 		}
 		
 	}
@@ -124,6 +163,46 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 		stone[1]->SetPosition(360, 470);
 		stone[2]->SetSize(3);
 		stone[2]->SetPosition(550, 150);
+	}else if (level == 3) {
+		score = 0;
+		for (int i = 0; i < 3; i++) {
+			gold.push_back(new GoldMine);
+		}
+		gold[0]->SetSize(1);
+		gold[0]->SetPosition(100, 200);
+		gold[1]->SetSize(2);
+		gold[1]->SetPosition(200, 350);
+		gold[2]->SetSize(3);
+		gold[2]->SetPosition(450, 320);
+		for (int i = 0; i < 2; i++) {
+			diamond.push_back(new Diamond);
+		}
+		diamond[0]->Set();
+		diamond[0]->SetPosition(800, 380);
+		diamond[1]->Set();
+		diamond[1]->SetPosition(360, 470);
+	}else if (level == 4) {
+		score = 0;
+		for (int i = 0; i < 3; i++) {
+			gold.push_back(new GoldMine);
+		}
+		gold[0]->SetSize(1);
+		gold[0]->SetPosition(100, 200);
+		gold[1]->SetSize(2);
+		gold[1]->SetPosition(200, 350);
+		gold[2]->SetSize(3);
+		gold[2]->SetPosition(450, 320);
+		for (int i = 0; i < 2; i++) {
+			can.push_back(new Can);
+		}
+		can[0]->Set();
+		can[0]->SetPosition(800, 380);
+		can[1]->Set();
+		can[1]->SetPosition(360, 470);
+	}else if (level == 5) {
+		score = 0;
+		
+		
 	}
 	hook.OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -162,7 +241,7 @@ void CGameStateRun::OnShow()
 		hook.OnShow();
 
 		for (int i = 0; i < int(gold.size()); i++) {
-			if (gold[i]->GetObjStatus() == 1) {//未碰到礦物/碰到後回家路上
+			if (gold[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
 				gold[i]->Show();
 			}
 			else {//碰到礦物已帶回家	
@@ -170,11 +249,27 @@ void CGameStateRun::OnShow()
 			}
 		}
 		for (int i = 0; i < int(stone.size()); i++) {
-			if (stone[i]->GetObjStatus() == 1) {//未碰到礦物/碰到後回家路上
+			if (stone[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
 				stone[i]->Show();
 			}
 			else {//碰到礦物已帶回家	
 				stone[i]->UnShow();
+			}
+		}
+		for (int i = 0; i < int(diamond.size()); i++) {
+			if (diamond[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
+				diamond[i]->Show();
+			}
+			else {//碰到礦物已帶回家	
+				diamond[i]->UnShow();
+			}
+		}
+		for (int i = 0; i < int(can.size()); i++) {
+			if (can[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
+				can[i]->Show();
+			}
+			else {//碰到礦物已帶回家	
+				can[i]->UnShow();
 			}
 		}
 	}

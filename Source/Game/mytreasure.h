@@ -26,7 +26,7 @@ namespace game_framework {
 		virtual int GetPositionY();
 		virtual int GetWidth();
 		virtual int GetHeight();
-		virtual bool GoldBackHome(int frameindex);
+		virtual bool GoldBackHome(double angle);
 		virtual int GetObjStatus();
 		virtual void SetObjStatus(int value);
 	private:
@@ -49,11 +49,59 @@ namespace game_framework {
 		int GetPositionY() override;
 		int GetWidth() override;
 		int GetHeight() override;
-		bool GoldBackHome(int frameindex) override;
+		bool GoldBackHome(double angle) override;
 		int GetObjStatus() override;
 		void SetObjStatus(int value) override;
 	private:
 		int size = 0;
+		CMovingBitmap mine;
+		int state = 0;
+		int obj_status = 1;
+	};
+
+	class Diamond : public Treasure {
+	public:
+		Diamond();
+		~Diamond();
+		virtual double Catch() override;
+		virtual int Time() override;
+		virtual void Set();
+		void Show();
+		void UnShow();
+		void SetPosition(int x, int y);
+		int GetPositionX();
+		int GetPositionY();
+		int GetWidth();
+		int GetHeight();
+		bool GoldBackHome(double angle);
+		int GetObjStatus();
+		void SetObjStatus(int value);
+	private:
+		//int size = 0;
+		CMovingBitmap mine;
+		int state = 0;
+		int obj_status = 1;
+	};
+
+	class Can : public Diamond {
+	public:
+		Can();
+		~Can();
+		virtual double Catch() override;
+		virtual int Time() override;
+		virtual void Set() override;
+		void Show();
+		void UnShow();
+		void SetPosition(int x, int y);
+		int GetPositionX();
+		int GetPositionY();
+		int GetWidth();
+		int GetHeight();
+		bool GoldBackHome(double angle);
+		int GetObjStatus();
+		void SetObjStatus(int value);
+	private:
+		//int size = 0;
 		CMovingBitmap mine;
 		int state = 0;
 		int obj_status = 1;
@@ -83,18 +131,6 @@ namespace game_framework {
 		int frameindex;
 	};
 
-	/*class hookmoving : public hookcpp {
-	public:
-		static void ReleaseTab(hookcpp hook, int frameindex);
-		static void RollTab(hookcpp hook, int frameindex);
-		static bool IsOverlap(hookcpp hook, int a, int b);
-		static bool GoldBackHome(GoldMine bmp, int frameindex);
-	private:
-		CMovingBitmap mine;
-		static double x;
-		static double y;
-		double angle;			//顯示目前角度
-	};*/
 }
 
 #endif

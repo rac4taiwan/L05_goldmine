@@ -44,14 +44,12 @@ void hookcpp::OnMove() {
 	}
 	else if (hook_status == 1) {//鉤子出發狩獵
 		//決定角度
-		//frameindex = hook_stay.GetFrameIndex();
 		frameindex = hook_stay.GetFrameIndexOfBitmap();
 		if (frameindex > 13)frameindex = 27 - frameindex;
 		//hook.SetHook(frameindex);
 		hook_attack.SetFrameIndexOfBitmap(frameindex);
 		//鉤子出發
 		this->ReleaseTab(frameindex);
-
 	}
 
 	if (hook_status == 2) {
@@ -99,27 +97,19 @@ void hookcpp::ReleaseTab(int frameindex)
 		x = hook_attack.GetLeft() + 10 * cos(angle);
 		y = hook_attack.GetTop() - 10 * sin(angle);
 		hook_attack.SetTopLeft(int(x), int(y));
-	}
-	
-	/*if (obj_status == 1) {//礦物流浪中，檢查鉤子礦物是否重疊
-		//為每個礦物寫for迴圈：gold[i]、obj_status[i]
-		if (IsOverlap(390, 300)) {
-			obj_status = 2;//狀態：碰到後回家路上
-			hook_status = 2;
-		}
-		//迴圈結束
-	}*/
-	
+	}	
 }
 
 void hookcpp::RollTab(int frameindex)
 {
-	double angle = 340 - (10 * frameindex);
-	angle = angle * 3.1416 / 180;
+	//double angle = 340 - (10 * frameindex);
+	//angle = angle * 3.1416 / 180;
+	double angle = atan2(75 - hook_attack.GetTop(), hook_attack.GetLeft() - 385);//xy對調：會畫圓
+
 
 	if (hook_attack.GetTop() <= 75) {//回到一定高度後回收
 		hook_status = 0;
-		hook_attack.SetTopLeft(400, 75);
+		hook_attack.SetTopLeft(385, 75);
 	}
 	else {
 		//要再乘以速度設定
@@ -137,10 +127,9 @@ bool hookcpp::IsOverlap(int ox, int oy, int ow, int oh){
 	double ocx = ox + (double(ow) / 2);
 	double ocy = oy + (double(oh) / 2);
 
-
 	if (hy > ocy - 100 && hy < ocy) {
 		if (hx > ocx && hx < ocx + 81) {
-			hook_status = 2;
+			hook_status = 2;//鉤子回家
 			return true;
 		}
 	}

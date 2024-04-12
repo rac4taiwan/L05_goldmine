@@ -106,6 +106,8 @@ namespace game_framework {
 		CMovingBitmap Score_number[3];
 		vector<GoldMine*> gold;
 		vector<Stone*> stone;
+		vector<Diamond*> diamond;
+		vector<Can*> can;
 		MapFrame gm;
 		int state = 0;
 		int tmp_status = 0;
