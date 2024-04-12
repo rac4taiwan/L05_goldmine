@@ -121,12 +121,14 @@ namespace game_framework {
 		bool IsOverlap(int ox, int oy, int ow, int oh);
 		int GetFrameIndex();
 		void SetAnimate(int delay, bool once);
+		void SetSpeed(double value);
 	private:
 		CMovingBitmap hook_stay;
 		CMovingBitmap hook_attack;
 		double x;
 		double y;
 		double angle;			//顯示目前角度
+		double speed;
 		int hook_status = 0; //設定狀態：0=搖晃中，1=放線，2=收回線，3=非關卡途中
 		int frameindex;
 	};
