@@ -82,22 +82,21 @@ int GoldMine::GetHeight() {
 	return mine.GetHeight();
 }
 
-bool GoldMine::GoldBackHome(int frameindex) {
-	double angle = 340 - (10 * frameindex);
-	angle = angle * 3.1416 / 180;
+bool GoldMine::GoldBackHome(double angle) {
 
 	if (mine.GetTop() <= 75) {//回到一定高度後回收
 		mine.SetTopLeft(0, 0);
 		return true;
 	}
-	else {
+	else if (obj_status == 2) {
 		//要再乘以速度設定(要跟鉤子的速度一樣
-		double x = mine.GetLeft() - 10 * cos(angle);
+		double x = mine.GetLeft() + 10 * cos(angle);
 		double y = mine.GetTop() + 10 * sin(angle);
 		mine.SetTopLeft(int(x), int(y));
 
-		return false; //程式繼續執行
 	}
+	return false; //程式繼續執行
+
 }
 
 int GoldMine::GetObjStatus() {
@@ -106,6 +105,7 @@ int GoldMine::GetObjStatus() {
 
 void GoldMine::SetObjStatus(int value) {
 	obj_status = value;
+	//0=
 }
 
 // ---------------------Stone----------------------
@@ -166,21 +166,19 @@ int Stone::GetHeight() {
 	return mine.GetHeight();
 }
 
-bool Stone::GoldBackHome(int frameindex) {
-	double angle = 340 - (10 * frameindex);
-	angle = angle * 3.1416 / 180;
+bool Stone::GoldBackHome(double angle) {
 
 	if (mine.GetTop() <= 75) {//回到一定高度後回收
+		mine.SetTopLeft(0, 0);
 		return true;
 	}
-	else {
+	else if (obj_status == 2){
 		//要再乘以速度設定(要跟鉤子的速度一樣
-		double x = mine.GetLeft() - 10 * cos(angle);
+		double x = mine.GetLeft() + 10 * cos(angle);
 		double y = mine.GetTop() + 10 * sin(angle);
 		mine.SetTopLeft(int(x), int(y));
-
-		return false; //程式繼續執行
 	}
+	return false; //程式繼續執行
 }
 
 int Stone::GetObjStatus() {
@@ -188,5 +186,149 @@ int Stone::GetObjStatus() {
 }
 
 void Stone::SetObjStatus(int value) {
+	obj_status = value;
+}
+
+// ---------------------Diamond----------------------
+Diamond::Diamond() {
+
+}
+
+Diamond::~Diamond() {
+
+}
+
+void Diamond::Set() {
+	mine.LoadBitmapByString({ "resources/diamond.bmp" }, RGB(0, 0, 0));
+}
+
+double Diamond::Catch() {
+	return 1.0;
+}
+
+int Diamond::Time() {
+	return 20;
+}
+
+void Diamond::Show() {
+	mine.ShowBitmap();
+}
+
+void Diamond::UnShow() {
+	mine.UnshowBitmap();
+}
+
+void Diamond::SetPosition(int x, int y) {
+	mine.SetTopLeft(x, y);
+}
+
+int Diamond::GetPositionX() {
+	return mine.GetLeft();
+}
+
+int Diamond::GetPositionY() {
+	return mine.GetTop();
+}
+
+int Diamond::GetWidth() {
+	return mine.GetWidth();
+}
+
+int Diamond::GetHeight() {
+	return mine.GetHeight();
+}
+
+bool Diamond::GoldBackHome(double angle) {
+
+	if (mine.GetTop() <= 75) {//回到一定高度後回收
+		mine.SetTopLeft(0, 0);
+		return true;
+	}
+	else if (obj_status == 2) {
+		//要再乘以速度設定(要跟鉤子的速度一樣
+		double x = mine.GetLeft() + 10 * cos(angle);
+		double y = mine.GetTop() + 10 * sin(angle);
+		mine.SetTopLeft(int(x), int(y));
+	}
+	return false; //程式繼續執行
+}
+
+int Diamond::GetObjStatus() {
+	return obj_status;
+}
+
+void Diamond::SetObjStatus(int value) {
+	obj_status = value;
+}
+
+// ---------------------Diamond----------------------
+Can::Can() {
+
+}
+
+Can::~Can() {
+
+}
+
+void Can::Set() {
+	mine.LoadBitmapByString({ "resources/can.bmp" }, RGB(0, 255, 0));
+}
+
+double Can::Catch() {
+	return 1.0;
+}
+
+int Can::Time() {
+	return -15;
+}
+
+void Can::Show() {
+	mine.ShowBitmap();
+}
+
+void Can::UnShow() {
+	mine.UnshowBitmap();
+}
+
+void Can::SetPosition(int x, int y) {
+	mine.SetTopLeft(x, y);
+}
+
+int Can::GetPositionX() {
+	return mine.GetLeft();
+}
+
+int Can::GetPositionY() {
+	return mine.GetTop();
+}
+
+int Can::GetWidth() {
+	return mine.GetWidth();
+}
+
+int Can::GetHeight() {
+	return mine.GetHeight();
+}
+
+bool Can::GoldBackHome(double angle) {
+
+	if (mine.GetTop() <= 75) {//回到一定高度後回收
+		mine.SetTopLeft(0, 0);
+		return true;
+	}
+	else if (obj_status == 2) {
+		//要再乘以速度設定(要跟鉤子的速度一樣
+		double x = mine.GetLeft() + 10 * cos(angle);
+		double y = mine.GetTop() + 10 * sin(angle);
+		mine.SetTopLeft(int(x), int(y));
+	}
+	return false; //程式繼續執行
+}
+
+int Can::GetObjStatus() {
+	return obj_status;
+}
+
+void Can::SetObjStatus(int value) {
 	obj_status = value;
 }
