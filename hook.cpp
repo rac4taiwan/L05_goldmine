@@ -112,11 +112,12 @@ void hookcpp::RollTab(int frameindex)
 	if (hook_attack.GetTop() <= 75) {//回到一定高度後回收
 		hook_status = 0;
 		hook_attack.SetTopLeft(385, 75);
+		speed = 1.0;
 	}
 	else {
 		//要再乘以速度設定
-		x = hook_attack.GetLeft() - 10 * cos(angle)*speed;
-		y = hook_attack.GetTop() + 10 * sin(angle)*speed;
+		x = hook_attack.GetLeft() - 10 * cos(angle) * speed;
+		y = hook_attack.GetTop() + 10 * sin(angle) * speed;
 		hook_attack.SetTopLeft(int(x), int(y));
 	}	
 }

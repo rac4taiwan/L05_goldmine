@@ -26,8 +26,19 @@ void MapFrame::Setting() {
 
 	// 設定關卡圖案
 	for (int i = 0; i < total_level; i++) { 
-		Stage[i].Setting(i+1);
-		Stage[i].SetTopLeft(180 * i, 0);
+		if (i < 5) {
+			Stage[i].Setting(i + 1);
+			Stage[i].SetTopLeft(180 * i, 0);
+		}
+		else if (i < 10) {
+			Stage[i].Setting(i + 1);
+			Stage[i].SetTopLeft(180 * (i % 5), 150);
+		}
+		else if (i < 15) {
+			Stage[i].Setting(i + 1);
+			Stage[i].SetTopLeft(180 * (i % 5), 200);
+		}
+		
 	}
 	// 載入背景圖
 	Background.LoadBitmapByString({ "resources/background_0.bmp","resources/background.bmp" }, RGB(255,255,255));
@@ -39,9 +50,9 @@ void MapFrame::Setting() {
 		Time_number[i].LoadBitmapByString({ "resources/T0.bmp", "resources/T1.bmp", "resources/T2.bmp", "resources/T3.bmp", "resources/T4.bmp", "resources/T5.bmp", "resources/T6.bmp", "resources/T7.bmp", "resources/T8.bmp", "resources/T9.bmp" }, RGB(255, 255, 255));
 		Time_number[i].SetTopLeft(775 + i * (25), 30);
 	}
-	Time_number[0].SetFrameIndexOfBitmap(0);
-	Time_number[1].SetFrameIndexOfBitmap(2);
-	Time_number[2].SetFrameIndexOfBitmap(3);
+	//Time_number[0].SetFrameIndexOfBitmap(0);
+	//Time_number[1].SetFrameIndexOfBitmap(2);
+	//Time_number[2].SetFrameIndexOfBitmap(3);
 	//Finish.LoadBitmapByString({ "resources/times_up.bmp" }, RGB(255, 255, 255));
 	//Finish.SetTopLeft(60, 50);
 
@@ -52,9 +63,9 @@ void MapFrame::Setting() {
 		Score_number[i].LoadBitmapByString({ "resources/T0.bmp", "resources/T1.bmp", "resources/T2.bmp", "resources/T3.bmp", "resources/T4.bmp", "resources/T5.bmp", "resources/T6.bmp", "resources/T7.bmp", "resources/T8.bmp", "resources/T9.bmp" }, RGB(255, 255, 255));
 		Score_number[i].SetTopLeft(105 + i * (25), 30);
 	}
-	Score_number[0].SetFrameIndexOfBitmap(0);
-	Score_number[1].SetFrameIndexOfBitmap(0);
-	Score_number[2].SetFrameIndexOfBitmap(0);
+	//Score_number[0].SetFrameIndexOfBitmap(0);
+	//Score_number[1].SetFrameIndexOfBitmap(0);
+	//Score_number[2].SetFrameIndexOfBitmap(0);
 }
 
 void MapFrame::OnMove() {
@@ -65,7 +76,8 @@ void MapFrame::OnMove() {
 		// number[0]、[1]、[2]分別為百、十、個位數，若百位數為0則隱藏，十位數同理
 		if (count == 30) {
 			count = 0;
-			int number[3];
+			time -= 1;
+			/*int number[3];
 			number[0] = Time_number[0].GetFrameIndexOfBitmap();
 			number[1] = Time_number[1].GetFrameIndexOfBitmap();
 			number[2] = Time_number[2].GetFrameIndexOfBitmap();
@@ -88,31 +100,36 @@ void MapFrame::OnMove() {
 						state = 2;  // 時間到，跳至結算畫面
 					}
 				}
-			}
+			}*/
+		}
+		if (time <= 0) {
+			state = 2;
 		}
 	}
 }
 
-void MapFrame::GetPoint(int score) {
-	int v1 = Score_number[2].GetFrameIndexOfBitmap() + score % 10;
+void MapFrame::GetPoint(int value) {
+	/*int v1 = Score_number[2].GetFrameIndexOfBitmap() + score % 10;
 	int v2 = Score_number[1].GetFrameIndexOfBitmap() + score / 10 + v1 / 10;
 	int v3 = Score_number[0].GetFrameIndexOfBitmap() + v2 / 10;
 	Score_number[0].SetFrameIndexOfBitmap(v3%10);
 	Score_number[1].SetFrameIndexOfBitmap(v2%10);
-	Score_number[2].SetFrameIndexOfBitmap(v1%10);
+	Score_number[2].SetFrameIndexOfBitmap(v1%10);*/
+	score += value;
 }
 
 int MapFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if (nChar == VK_RETURN) {
 		if (state == 0) {
 			state = 1;
+			score = 0;
 			return now_level;
 		}
 		if (state == 2) {
 			state = 0;
-			Time_number[0].SetFrameIndexOfBitmap(0);
-			Time_number[1].SetFrameIndexOfBitmap(2);
-			Time_number[2].SetFrameIndexOfBitmap(9);
+			//Time_number[0].SetFrameIndexOfBitmap(0);
+			//Time_number[1].SetFrameIndexOfBitmap(2);
+			//Time_number[2].SetFrameIndexOfBitmap(9);
 			Score_number[0].SetFrameIndexOfBitmap(0);
 			Score_number[1].SetFrameIndexOfBitmap(0);
 			Score_number[2].SetFrameIndexOfBitmap(0);
@@ -172,7 +189,7 @@ void MapFrame::Show()
 		else if (obj_status == 0) {//碰到礦物已帶回家	
 			gold.UnShow();
 		}*/
-		if (Time_number[0].GetFrameIndexOfBitmap() == 0) {
+		/*if (Time_number[0].GetFrameIndexOfBitmap() == 0) {
 			Time_number[0].UnshowBitmap();
 			if (Time_number[1].GetFrameIndexOfBitmap() == 0) {
 				Time_number[1].UnshowBitmap();
@@ -186,9 +203,23 @@ void MapFrame::Show()
 				Time_number[i].ShowBitmap();
 			}
 		}
-		Time_number[2].ShowBitmap();
+		Time_number[2].ShowBitmap();*/
+		if (time >= 0) {
+			if ((time / 100) != 0) {
+				Time_number[0].SetFrameIndexOfBitmap(time / 100);
+				Time_number[1].SetFrameIndexOfBitmap((time % 100) / 10);
+				Time_number[0].ShowBitmap();
+				Time_number[1].ShowBitmap();
+			}
+			else if (((time % 100) / 10) != 0) {
+				Time_number[1].SetFrameIndexOfBitmap((time % 100) / 10);
+				Time_number[1].ShowBitmap();
+			}
+			Time_number[2].SetFrameIndexOfBitmap(time % 10);
+			Time_number[2].ShowBitmap();
+		}
 
-		if (Score_number[0].GetFrameIndexOfBitmap() == 0) {
+		/*if (Score_number[0].GetFrameIndexOfBitmap() == 0) {
 			Score_number[0].UnshowBitmap();
 			if (Score_number[1].GetFrameIndexOfBitmap() == 0) {
 				Score_number[1].UnshowBitmap();
@@ -202,6 +233,19 @@ void MapFrame::Show()
 				Score_number[i].ShowBitmap();
 			}
 		}
+		Score_number[2].ShowBitmap();*/
+
+		if ((score / 100) != 0) {
+			Score_number[0].SetFrameIndexOfBitmap(score / 100);
+			Score_number[1].SetFrameIndexOfBitmap((score % 100) / 10);
+			Score_number[0].ShowBitmap();
+			Score_number[1].ShowBitmap();
+		}
+		else if (((score % 100) / 10) != 0) {
+			Score_number[1].SetFrameIndexOfBitmap((score % 100) / 10);
+			Score_number[1].ShowBitmap();
+		}
+		Score_number[2].SetFrameIndexOfBitmap(score % 10);
 		Score_number[2].ShowBitmap();
 	}
 	else if (state == 2) {
@@ -226,6 +270,17 @@ bool MapFrame::IsOver() {
 
 void MapFrame::SendScore(int score) {
 	end_score = score;
+}
+void MapFrame::SetTime(int value) {
+	time = value;
+}
+
+int MapFrame::GetTime() {
+	return time;
+}
+
+void MapFrame::SetThreshold(int a, int b, int c) {
+	EndGame.SetThreshold(a, b, c);
 }
 
 
@@ -264,19 +319,41 @@ End::End() {
 
 }
 
+void End::SetThreshold(int a, int b, int c) {
+	threshold[0] = a;
+	threshold[1] = b;
+	threshold[2] = c;
+}
+
 void End::Setting(int score, int level) {
 	frame.LoadBitmapByString({ "resources/End_0.bmp", "resources/End_1.bmp", "resources/End_2.bmp", "resources/End_3.bmp" });
 	frame.SetTopLeft(0, 0);
-	if (level == 1) {
-		if (score > 90) {
+	if (score >= threshold[0]) {
+		frame.SetFrameIndexOfBitmap(3);
+		star = 3;
+	}
+	else if (score >= threshold[1]) {
+		frame.SetFrameIndexOfBitmap(2);
+		star = 2;
+	}
+	else if (score >= threshold[2]) {
+		frame.SetFrameIndexOfBitmap(1);
+		star = 1;
+	}
+	else {
+		frame.SetFrameIndexOfBitmap(0);
+		star = 0;
+	}
+	/*if (level == 1) {
+		if (score > threshold[0][0]) {
 			frame.SetFrameIndexOfBitmap(3);
 			star =  3;
 		}
-		else if (score > 50) {
+		else if (score > threshold[0][1]) {
 			frame.SetFrameIndexOfBitmap(2);
 			star =  2;
 		}
-		else if (score > 30) {
+		else if (score > threshold[0][2]) {
 			frame.SetFrameIndexOfBitmap(1);
 			star = 1;
 		}
@@ -303,6 +380,78 @@ void End::Setting(int score, int level) {
 			star = 0;
 		}
 	}
+	else if (level == 3) {
+		if (score == 60) {
+			frame.SetFrameIndexOfBitmap(3);
+			star = 3;
+		}
+		else if (score > 40) {
+			frame.SetFrameIndexOfBitmap(2);
+			star = 2;
+		}
+		else if (score > 30) {
+			frame.SetFrameIndexOfBitmap(1);
+			star = 1;
+		}
+		else {
+			frame.SetFrameIndexOfBitmap(0);
+			star = 0;
+		}
+	}
+	else if (level == 4) {
+		if (score == 60) {
+			frame.SetFrameIndexOfBitmap(3);
+			star = 3;
+		}
+		else if (score > 40) {
+			frame.SetFrameIndexOfBitmap(2);
+			star = 2;
+		}
+		else if (score > 30) {
+			frame.SetFrameIndexOfBitmap(1);
+			star = 1;
+		}
+		else {
+			frame.SetFrameIndexOfBitmap(0);
+			star = 0;
+		}
+	}
+	else if (level == 5) {
+		if (score == 60) {
+			frame.SetFrameIndexOfBitmap(3);
+			star = 3;
+		}
+		else if (score >= 40) {
+			frame.SetFrameIndexOfBitmap(2);
+			star = 2;
+		}
+		else if (score >= 30) {
+			frame.SetFrameIndexOfBitmap(1);
+			star = 1;
+		}
+		else {
+			frame.SetFrameIndexOfBitmap(0);
+			star = 0;
+		}
+	}
+	else if (level == 6) {
+		if (score == 60) {
+			frame.SetFrameIndexOfBitmap(3);
+			star = 3;
+		}
+		else if (score >= 40) {
+			frame.SetFrameIndexOfBitmap(2);
+			star = 2;
+		}
+		else if (score >= 30) {
+			frame.SetFrameIndexOfBitmap(1);
+			star = 1;
+		}
+		else {
+			frame.SetFrameIndexOfBitmap(0);
+			star = 0;
+		}
+	}*/
 	/*else if (level == 2) {
 		if (score > 90) {
 			frame.SetFrameIndexOfBitmap(3);
