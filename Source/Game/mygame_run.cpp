@@ -34,91 +34,66 @@ void CGameStateRun::OnMove()							// 移動遊戲元素
 	gm.OnMove();  // 跳至mapframe::OnMove
 
 	hook.OnMove(); // 跳至hookcpp::OnMove
-	bool check;
-	// 每個礦物的執行式
-	for (int i = 0; i < int(gold.size()); i++) {
-		// 如果礦物還在場上
-		if (gold[i]->GetObjStatus() == 1 || gold[i]->GetObjStatus() == 2) {
-			//確認礦物與鉤子有接觸
-			check = hook.IsOverlap(gold[i]->GetPositionX(), gold[i]->GetPositionY(), gold[i]->GetWidth(), gold[i]->GetHeight());
-			if (check) {//確認有重疊到
-				gold[i]->SetObjStatus(2);
-				hook.SetSpeed(gold[i]->Catch());
+	//bool check;
+	// 礦物執行式
+	for (int i = 0; i < mine_kind; i++) {
+		for (int j = 0; j < int(treasure[i].size()); j++) {
+			if (treasure[i][j]->GetObjStatus() == 1 && treasure[i][j]->GetID() == "mouse") {
+				Mouse* tmp = dynamic_cast<Mouse*>(treasure[i][j]);
+				tmp->Move();
 			}
-			// 確認礦物已回原點，需計算分數或時間等
-			if (gold[i]->GoldBackHome(atan2(75 - gold[i]->GetPositionY(), 385 - gold[i]->GetPositionX())) && gold[i]->GetObjStatus() == 2) {//礦回原點的時候計分
-				gm.GetPoint(gold[i]->Score());
-				gold[i]->SetObjStatus(0);
-				score += gold[i]->Score();
-
-			}
-		}
-	}
-	for (int i = 0; i < int(stone.size()); i++) {
-		if (stone[i]->GetObjStatus() == 1 || stone[i]->GetObjStatus() == 2) {
-			check = hook.IsOverlap(stone[i]->GetPositionX(), stone[i]->GetPositionY(), stone[i]->GetWidth(), stone[i]->GetHeight());
-			if (check) {
-				stone[i]->SetObjStatus(2);
-			}
-			if (stone[i]->GoldBackHome(atan2(75 - stone[i]->GetPositionY(), 385 - stone[i]->GetPositionX())) && stone[i]->GetObjStatus() == 2) {
-				stone[i]->SetObjStatus(0);
-				score += stone[i]->Score();
-				if (score >= 0) {
-					gm.GetPoint(stone[i]->Score());
+			else if (treasure[i][j]->GetObjStatus() == 3) {
+				if (treasure[i][j - 1]->GetObjStatus() == 0) {
+					treasure[i][j]->SetObjStatus(1);
 				}
-				// 分數小於零則進入結算
-				else {
-					score = 0;
-					gm.ChangeState(2);
+				//				treasure[i][j]->Order();
+			}
+
+			if (treasure[i][j]->GetObjStatus() == 1 || treasure[i][j]->GetObjStatus() == 2) {
+				//check = hook.IsOverlap(treasure[i][j]->GetLeft(), treasure[i][j]->GetTop(), treasure[i][j]->GetWidth(), treasure[i][j]->GetHeight());
+				//check = hook == treasure[i][j];
+				if (hook == treasure[i][j]) {
+					treasure[i][j]->SetObjStatus(2);
+					hook.SetSpeed(treasure[i][j]->Catch());
+				}
+				if (treasure[i][j]->GoldBackHome(atan2(75 - treasure[i][j]->GetTop(), 385 - treasure[i][j]->GetLeft())) && treasure[i][j]->GetObjStatus() == 2) {
+					treasure[i][j]->SetObjStatus(0);
+					score += treasure[i][j]->Score();
+					if (score >= 0) {
+						//gm.GetPoint(treasure[i][j]->Score());
+						gm += treasure[i][j]->Score();
+					}
+					// 分數小於零則進入結算
+					else if (score < 0) {
+						score = 0;
+						gm.ChangeState(2);
+					}
+					//gm.SetTime(gm.GetTime() + treasure[i][j]->Time());
+					gm = treasure[i][j]->Time();
 				}
 			}
 		}
 	}
-	for (int i = 0; i < int(diamond.size()); i++) {
-		if (diamond[i]->GetObjStatus() == 1 || diamond[i]->GetObjStatus() == 2) {
-			check = hook.IsOverlap(diamond[i]->GetPositionX(), diamond[i]->GetPositionY(), diamond[i]->GetWidth(), diamond[i]->GetHeight());
-			if (check) {//確認有重疊到
-				diamond[i]->SetObjStatus(2);
-			}
-			if (diamond[i]->GoldBackHome(atan2(75 - diamond[i]->GetPositionY(), 385 - diamond[i]->GetPositionX())) && diamond[i]->GetObjStatus() == 2) {//礦回原點的時候計分
-				/*這邊要改成時間*/
-				gm.GetPoint(diamond[i]->Time());
-				diamond[i]->SetObjStatus(0);
-				score += diamond[i]->Time();
+	
 
-			}
+	int gold_check = treasure[0].size();
+	for (int i = 0; i < int(treasure[0].size()); i++) {
+		if (treasure[0][i]->GetObjStatus() == 0) {
+			gold_check -= 1;
 		}
 	}
-	for (int i = 0; i < int(can.size()); i++) {
-		if (can[i]->GetObjStatus() == 1 || can[i]->GetObjStatus() == 2) {
-			check = hook.IsOverlap(can[i]->GetPositionX(), can[i]->GetPositionY(), can[i]->GetWidth(), can[i]->GetHeight());
-			if (check) {//確認有重疊到
-				can[i]->SetObjStatus(2);
-			}
-			if (can[i]->GoldBackHome(atan2(75 - can[i]->GetPositionY(), 385 - can[i]->GetPositionX())) && can[i]->GetObjStatus() == 2) {//礦回原點的時候計分
-				/*這邊要改成時間*/
-				gm.GetPoint(can[i]->Time());
-				can[i]->SetObjStatus(0);
-				score += can[i]->Time();
-
-			}
-		}
+	if (gold_check == 0 && gm.GetNowStage() == 1) {
+		gm.ChangeState(2);
 	}
+
 
 	// 若進入結算畫面，需傳分數給mapframe  (即gm)，並刪除礦物陣列裡的物件
 	if (gm.IsOver()) {
 		gm.SendScore(score);
-		for (int i = 0; i < int(gold.size()); i++) {
-			gold.pop_back();
-		}
-		for (int i = 0; i < int(stone.size()); i++) {
-			stone.pop_back();
-		}
-		for (int i = 0; i < int(diamond.size()); i++) {
-			diamond.pop_back();
-		}
-		for (int i = 0; i < int(can.size()); i++) {
-			can.pop_back();
+		for (int i = 0; i < mine_kind; i++) {
+			for (int j = 0; j < int(treasure[i].size()); j++) {
+				treasure[i].pop_back();
+			}
 		}
 		
 	}
@@ -136,80 +111,269 @@ void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 	level = gm.OnKeyDown(nChar, nRepCnt, nFlags);
 	if (level == 1) {
 		score = 0;
-		for (int i = 0; i < 5; i++) {
-			gold.push_back(new GoldMine);
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 2,2,3 };
+		vector<int> mine_x = { 100, 200,450 };
+		vector<int> mine_y = { 200,350,320 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		gold[0]->SetSize(2);
-		gold[0]->SetPosition(100, 200);
-		gold[1]->SetSize(2);
-		gold[1]->SetPosition(200, 350);
-		gold[2]->SetSize(3);
-		gold[2]->SetPosition(450, 320);
-		gold[3]->SetSize(1);
-		gold[3]->SetPosition(700, 280);
-		gold[4]->SetSize(2);
-		gold[4]->SetPosition(550, 150);
+		gm.SetThreshold(70, 50, 30);
 	}
 	else if (level == 2) {
 		score = 0;
+		gm.SetTime(40);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3,1,2,3 };
+		vector<int> mine_x = { 100,200,450,800,360,550 };
+		vector<int> mine_y = { 200,350,320,380,470,150 };
 		for (int i = 0; i < 3; i++) {
-			gold.push_back(new GoldMine);
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		gold[0]->SetSize(1);
-		gold[0]->SetPosition(100, 200);
-		gold[1]->SetSize(2);
-		gold[1]->SetPosition(200, 350);
-		gold[2]->SetSize(3);
-		gold[2]->SetPosition(450, 320);
 		for (int i = 0; i < 3; i++) {
-			stone.push_back(new Stone);
+			treasure[1].push_back(new Stone(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		stone[0]->SetSize(1);
-		stone[0]->SetPosition(800, 380);
-		stone[1]->SetSize(2);
-		stone[1]->SetPosition(360, 470);
-		stone[2]->SetSize(3);
-		stone[2]->SetPosition(550, 150);
-	}else if (level == 3) {
+		gm.SetThreshold(60, 50, 30);
+	}
+	else if (level == 3) {
 		score = 0;
+		gm.SetTime(10);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,800,360 };
+		vector<int> mine_y = { 200,350,320,380,470 };
 		for (int i = 0; i < 3; i++) {
-			gold.push_back(new GoldMine);
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		gold[0]->SetSize(1);
-		gold[0]->SetPosition(100, 200);
-		gold[1]->SetSize(2);
-		gold[1]->SetPosition(200, 350);
-		gold[2]->SetSize(3);
-		gold[2]->SetPosition(450, 320);
 		for (int i = 0; i < 2; i++) {
-			diamond.push_back(new Diamond);
+			treasure[2].push_back(new Diamond(mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		diamond[0]->Set();
-		diamond[0]->SetPosition(800, 380);
-		diamond[1]->Set();
-		diamond[1]->SetPosition(360, 470);
-	}else if (level == 4) {
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 4) {
 		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,800,360 };
+		vector<int> mine_y = { 200,350,320,380,470 };
 		for (int i = 0; i < 3; i++) {
-			gold.push_back(new GoldMine);
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		gold[0]->SetSize(1);
-		gold[0]->SetPosition(100, 200);
-		gold[1]->SetSize(2);
-		gold[1]->SetPosition(200, 350);
-		gold[2]->SetSize(3);
-		gold[2]->SetPosition(450, 320);
 		for (int i = 0; i < 2; i++) {
-			can.push_back(new Can);
+			treasure[2].push_back(new Can(mine_x[p], mine_y[p]));
+			p += 1;
 		}
-		can[0]->Set();
-		can[0]->SetPosition(800, 380);
-		can[1]->Set();
-		can[1]->SetPosition(360, 470);
-	}else if (level == 5) {
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 5) {
 		score = 0;
-		
-		
+		gm.SetTime(20);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3,1,2,1,2 };
+		vector<int> mine_x = { 100,200,450,650,80,350,700,800,360,760,250 };
+		vector<int> mine_y = { 200,350,320,180,440,300,280,380,470,170,220 };
+		for (int i = 0; i < 5; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 2; i++) {
+			treasure[1].push_back(new Stone(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 2; i++) {
+			treasure[2].push_back(new Diamond(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 2; i++) {
+			treasure[3].push_back(new Can(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);		
+	}
+	else if (level == 6) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 7) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 2,2,2,1 };
+		vector<int> mine_x = { 100,200,600,300,500,600 };
+		vector<int> mine_y = { 200,400,400,320,300,220 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[1].push_back(new Stone(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[2].push_back(new Diamond(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(40, 20, 10);
+	}
+	else if (level == 8) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 9) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 10) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,250 };
+		for (int i = 0; i < 1; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 3; i++) {
+			treasure[4].push_back(new Mummy(i, mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}else if (level == 11) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 12) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 13) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 14) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
+	}
+	else if (level == 15) {
+		score = 0;
+		gm.SetTime(30);
+		int p = 0;
+		vector<int> mine_size = { 1,2,3 };
+		vector<int> mine_x = { 100,200,450,700 };
+		vector<int> mine_y = { 200,350,320,300 };
+		for (int i = 0; i < 3; i++) {
+			treasure[0].push_back(new GoldMine(mine_size[p], mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		for (int i = 0; i < 1; i++) {
+			treasure[4].push_back(new Mouse(mine_x[p], mine_y[p]));
+			p += 1;
+		}
+		gm.SetThreshold(60, 40, 30);
 	}
 	hook.OnKeyDown(nChar, nRepCnt, nFlags);
 }
@@ -247,36 +411,14 @@ void CGameStateRun::OnShow()
 
 		hook.OnShow();
 
-		for (int i = 0; i < int(gold.size()); i++) {
-			if (gold[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
-				gold[i]->Show();
-			}
-			else {//碰到礦物已帶回家	
-				gold[i]->UnShow();
-			}
-		}
-		for (int i = 0; i < int(stone.size()); i++) {
-			if (stone[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
-				stone[i]->Show();
-			}
-			else {//碰到礦物已帶回家	
-				stone[i]->UnShow();
-			}
-		}
-		for (int i = 0; i < int(diamond.size()); i++) {
-			if (diamond[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
-				diamond[i]->Show();
-			}
-			else {//碰到礦物已帶回家	
-				diamond[i]->UnShow();
-			}
-		}
-		for (int i = 0; i < int(can.size()); i++) {
-			if (can[i]->GetObjStatus() != 0) {//未碰到礦物/碰到後回家路上
-				can[i]->Show();
-			}
-			else {//碰到礦物已帶回家	
-				can[i]->UnShow();
+		for (int i = 0; i < mine_kind; i++) {
+			for (int j = 0; j < int(treasure[i].size()); j++) {
+				if (treasure[i][j]->GetObjStatus() != 0) {
+					treasure[i][j]->ShowBitmap();
+				}
+				else {
+					treasure[i][j]->UnshowBitmap();
+				}
 			}
 		}
 	}
