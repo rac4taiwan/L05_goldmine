@@ -13,9 +13,12 @@ namespace game_framework {
 		virtual bool GoldBackHome(double angle);
 		virtual int GetObjStatus();
 		virtual void SetObjStatus(int value);
-		virtual void Move();
+		//virtual void Move();
+		virtual string GetID();
 	protected:
 		int obj_status = 1;
+	private:
+		string ID = "treasure";
 	};
 
 	class GoldMine : public Treasure {
@@ -25,40 +28,22 @@ namespace game_framework {
 		~GoldMine();
 		virtual double Catch() override;
 		virtual int Score() override;
-		//virtual void SetSize(int s);
-		//virtual void Size(int s);
 		virtual bool GoldBackHome(double angle) override;
-		//virtual int GetObjStatus();
-		//virtual void SetObjStatus(int value);
+		virtual string GetID() override;
 	protected:
 		int size = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
+	private:
+		string ID = "goldmine";
 	};
 
 	class Stone : public GoldMine {
 	public:
 		Stone(int s, int x, int y);
 		~Stone();
-		//double Catch() override;
-		//void SetSize(int s) override;
 		int Score() override;
-		//void SetPosition(int x, int y) override;
-		//void Show() override;
-		//void UnShow() override;
-		//int GetPositionX() override;
-		//int GetPositionY() override;
-		//int GetWidth() override;
-		//int GetHeight() override;
-		//bool GoldBackHome(double angle) override;
-		//int GetObjStatus() override;
-		//void SetObjStatus(int value) override;
+		string GetID() override;
 	private:
-		//int size = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
+		string ID = "stone";
 	};
 
 	class Diamond : public Treasure {
@@ -66,93 +51,44 @@ namespace game_framework {
 		Diamond(int x, int y);
 		Diamond();
 		~Diamond();
-		//virtual double Catch();
 		virtual int Time() override;
-		//virtual void Set();
-		//void Show();
-		//void UnShow();
-		//void SetPosition(int x, int y);
-		//int GetPositionX();
-		//int GetPositionY();
-		//int GetWidth();
-		//int GetHeight();
-		//bool GoldBackHome(double angle);
-		//int GetObjStatus();
-		//void SetObjStatus(int value);
+		string GetID() override;
 	private:
-		//int size = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
+		string ID = "diamond";
 	};
 
 	class Can : public Diamond {
 	public:
 		Can(int x, int y);
 		~Can();
-		//virtual double Catch() override;
 		int Time() override;
-		//virtual void Set() override;
-		//void Show();
-		//void UnShow();
-		//void SetPosition(int x, int y);
-		//int GetPositionX();
-		//int GetPositionY();
-		//int GetWidth();
-		//int GetHeight();
-		//bool GoldBackHome(double angle);
-		//int GetObjStatus();
-		//void SetObjStatus(int value);
+		string GetID() override;
 	private:
-		//int size = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
+		string ID = "can";
 	};
 
 	class Mouse : public Diamond {
 	public:
 		Mouse(int x, int y);
 		~Mouse();
-		//virtual double Catch() override;
-		virtual int Score() override;
-		//virtual void Set() override;
-		//void Show();
-		//void UnShow();
-		//void SetPosition(int x, int y);
-		//int GetPositionX();
-		//int GetPositionY();
-		//int GetWidth();
-		//int GetHeight();
-		//bool GoldBackHome(double angle);
-		//int GetObjStatus();
-		//void SetObjStatus(int value);
-		void Move() override;
+		int Score() override;
+		int Time() override;
+		void Move();
+		string GetID() override;
 	private:
-		//int size = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
 		int count = 0;
+		string ID = "mouse";
 	};
-
 	class Mummy : public Treasure {
 	public:
 		Mummy(int i, int x, int y);
 		Mummy();
 		~Mummy();
-		//virtual double Catch() override;
 		virtual int Score() override;
-		//virtual void SetSize(int s);
-		//virtual void Size(int s);
-		//virtual bool GoldBackHome(double angle) override;
-		//virtual int GetObjStatus();
 		virtual void SetObjStatus(int value) override;
-	protected:
-		//int frame = 0;
-		//CMovingBitmap mine;
-		//int state = 0;
-		//int obj_status = 1;
+		string GetID() override;
+	private:
+		string ID = "mummy";
 	};
 
 
@@ -167,17 +103,19 @@ namespace game_framework {
 		void ReleaseTab(int frameindex);
 		void RollTab(int frameindex);
 		bool IsOverlap(int ox, int oy, int ow, int oh);
+		bool operator==(Treasure* obj);
 		int GetFrameIndex();
 		void SetAnimate(int delay, bool once);
 		void SetSpeed(double value);
+		void BeginState();
 	private:
 		CMovingBitmap hook_stay;
 		CMovingBitmap hook_attack;
 		double x;
 		double y;
-		double angle;			//Åã¥Ü¥Ø«e¨¤«×
+		double angle;			//é¡¯ç¤ºç›®å‰è§’åº¦
 		double speed = 1.0;
-		int hook_status = 0; //³]©wª¬ºA¡G0=·n®Ì¤¤¡A1=©ñ½u¡A2=¦¬¦^½u¡A3=«DÃö¥d³~¤¤
+		int hook_status = 0; //è¨­å®šç‹€æ…‹ï¼š0=æ–æ™ƒä¸­ï¼Œ1=æ”¾ç·šï¼Œ2=æ”¶å›ç·šï¼Œ3=éé—œå¡é€”ä¸­
 		int frameindex;
 	};
 

@@ -68,12 +68,12 @@ int GoldMine::Score() {
 
 bool GoldMine::GoldBackHome(double angle) {
 
-	if (this->GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
+	if (this->GetTop() <= 75) {//å›žåˆ°ä¸€å®šé«˜åº¦å¾Œå›žæ”¶
 		SetTopLeft(0, 0);
 		return true;
 	}
 	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
+		//è¦å†ä¹˜ä»¥é€Ÿåº¦è¨­å®š(è¦è·Ÿé‰¤å­çš„é€Ÿåº¦ä¸€æ¨£
 		double x, y;
 		if (size == 1) {
 			x = GetLeft() + 10 * cos(angle) * 0.95;
@@ -90,18 +90,14 @@ bool GoldMine::GoldBackHome(double angle) {
 		SetTopLeft(int(x), int(y));
 
 	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
+	return false; //ç¨‹å¼ç¹¼çºŒåŸ·è¡Œ
 
 }
 
-/*int GoldMine::GetObjStatus() {
-	return obj_status;
-}
 
-void GoldMine::SetObjStatus(int value) {
-	obj_status = value;
-	//0=
-}*/
+string GoldMine::GetID() {
+	return ID;
+}
 
 // ---------------------Stone----------------------
 Stone::Stone(int s, int x, int y) {
@@ -115,27 +111,6 @@ Stone::~Stone() {
 
 }
 
-/*double Stone::Catch() {
-	if (size == 1) {
-		return 0.95;
-	}
-	else if (size == 2) {
-		return 0.65;
-	}
-	else if (size == 3) {
-		return 0.3;
-	}
-	else {
-		return 1.0;
-	}
-}
-
-void Stone::SetSize(int s) {
-	Size(s);
-	size = s;
-	this->LoadBitmapByString({ "resources/stone1.bmp", "resources/stone2.bmp", "resources/stone3.bmp" }, RGB(255, 255, 255));
-	this->SetFrameIndexOfBitmap(size - 1);
-}*/
 
 int Stone::Score() {
 	if (size == 1) {
@@ -152,90 +127,17 @@ int Stone::Score() {
 	}
 }
 
-/*void Stone::SetPosition(int x, int y) {
-	mine.SetTopLeft(x, y);
+
+string Stone::GetID() {
+	return ID;
 }
-
-void Stone::Show() {
-	mine.ShowBitmap();
-}
-
-void Stone::UnShow() {
-	mine.UnshowBitmap();
-}
-
-int Stone::GetPositionX() {
-	return mine.GetLeft();
-}
-
-int Stone::GetPositionY() {
-	return mine.GetTop();
-}
-
-int Stone::GetWidth() {
-	return mine.GetWidth();
-}
-
-int Stone::GetHeight() {
-	return mine.GetHeight();
-}*/
-
-/*bool Stone::GoldBackHome(double angle) {
-
-	if (mine.GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
-		mine.SetTopLeft(0, 0);
-		return true;
-	}
-	else if (obj_status == 2){
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
-		double x = mine.GetLeft() + 10 * cos(angle);
-		double y = mine.GetTop() + 10 * sin(angle);
-		mine.SetTopLeft(int(x), int(y));
-	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
-}*/
-
-/*bool Stone::GoldBackHome(double angle) {
-
-	if (mine.GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
-		this->SetTopLeft(0, 0);
-		return true;
-	}
-	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
-		double x, y;
-		if (size == 1) {
-			x = this->GetLeft() + 10 * cos(angle) * 0.95;
-			y = this->GetTop() + 10 * sin(angle) * 0.95;
-		}
-		else if (size == 2) {
-			x = this->GetLeft() + 10 * cos(angle) * 0.65;
-			y = this->GetTop() + 10 * sin(angle) * 0.65;
-		}
-		else {
-			x = this->GetLeft() + 10 * cos(angle) * 0.3;
-			y = this->GetTop() + 10 * sin(angle) * 0.3;
-		}
-		this->SetTopLeft(int(x), int(y));
-
-	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
-
-}
-
-int Stone::GetObjStatus() {
-	return obj_status;
-}
-
-void Stone::SetObjStatus(int value) {
-	obj_status = value;
-}*/
 
 // ---------------------Diamond----------------------
 Diamond::Diamond(int x, int y) {
 	this->LoadBitmapByString({ "resources/diamond.bmp" }, RGB(0, 0, 0));
 	this->SetTopLeft(x, y);
 }
+
 
 Diamond::Diamond() {
 
@@ -245,68 +147,14 @@ Diamond::~Diamond() {
 
 }
 
-/*void Diamond::Set() {
-	this->LoadBitmapByString({ "resources/diamond.bmp" }, RGB(0, 0, 0));
-}
-
-double Diamond::Catch() {
-	return 0.9;
-}*/
-
 int Diamond::Time() {
 	return 20;
 }
 
-/*void Diamond::Show() {
-	mine.ShowBitmap();
+
+string Diamond::GetID() {
+	return ID;
 }
-
-void Diamond::UnShow() {
-	mine.UnshowBitmap();
-}
-
-void Diamond::SetPosition(int x, int y) {
-	mine.SetTopLeft(x, y);
-}
-
-int Diamond::GetPositionX() {
-	return mine.GetLeft();
-}
-
-int Diamond::GetPositionY() {
-	return mine.GetTop();
-}
-
-int Diamond::GetWidth() {
-	return mine.GetWidth();
-}
-
-int Diamond::GetHeight() {
-	return mine.GetHeight();
-}
-
-bool Diamond::GoldBackHome(double angle) {
-
-	if (this->GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
-		this->SetTopLeft(0, 0);
-		return true;
-	}
-	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
-		double x = this->GetLeft() + 10 * cos(angle);
-		double y = this->GetTop() + 10 * sin(angle);
-		this->SetTopLeft(int(x), int(y));
-	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
-}*/
-
-/*int Diamond::GetObjStatus() {
-	return obj_status;
-}
-
-void Diamond::SetObjStatus(int value) {
-	obj_status = value;
-}*/
 
 // ---------------------Can----------------------
 Can::Can(int x, int y) {
@@ -318,70 +166,17 @@ Can::~Can() {
 
 }
 
-/*void Can::Set() {
-	this->LoadBitmapByString({ "resources/can.bmp" }, RGB(0, 255, 0));
-}
-
-double Can::Catch() {
-	return 1.0;
-}*/
 
 int Can::Time() {
 	return -15;
 }
 
-/*void Can::Show() {
-	mine.ShowBitmap();
+string Can::GetID() {
+	return ID;
 }
-
-void Can::UnShow() {
-	mine.UnshowBitmap();
-}
-
-void Can::SetPosition(int x, int y) {
-	mine.SetTopLeft(x, y);
-}
-
-int Can::GetPositionX() {
-	return mine.GetLeft();
-}
-
-int Can::GetPositionY() {
-	return mine.GetTop();
-}
-
-int Can::GetWidth() {
-	return mine.GetWidth();
-}
-
-int Can::GetHeight() {
-	return mine.GetHeight();
-}
-
-bool Can::GoldBackHome(double angle) {
-
-	if (mine.GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
-		mine.SetTopLeft(0, 0);
-		return true;
-	}
-	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
-		double x = mine.GetLeft() + 10 * cos(angle);
-		double y = mine.GetTop() + 10 * sin(angle);
-		mine.SetTopLeft(int(x), int(y));
-	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
-}
-
-int Can::GetObjStatus() {
-	return obj_status;
-}
-
-void Can::SetObjStatus(int value) {
-	obj_status = value;
-}*/
 
 // ------------------Mouse-------------------
+// ---------------------Can----------------------
 Mouse::Mouse(int x, int y) {
 	this->LoadBitmapByString({ "resources/mouse_left.bmp", "resources/mouse_right.bmp" }, RGB(255, 255, 255));
 	this->SetTopLeft(x, y);
@@ -391,68 +186,13 @@ Mouse::~Mouse() {
 
 }
 
-/*void Mouse::Set() {
-	this->LoadBitmapByString({ "resources/mouse_left.bmp", "resources/mouse_right.bmp" }, RGB(255, 255, 255));
-}
-
-double Mouse::Catch() {
-	return 1.0;
-}*/
-
 int Mouse::Score() {
 	return -7;
 }
 
-/*void Mouse::Show() {
-	mine.ShowBitmap();
+int Mouse::Time() {
+	return -5;
 }
-
-void Mouse::UnShow() {
-	mine.UnshowBitmap();
-}
-
-void Mouse::SetPosition(int x, int y) {
-	mine.SetTopLeft(x, y);
-}
-
-int Mouse::GetPositionX() {
-	return mine.GetLeft();
-}
-
-int Mouse::GetPositionY() {
-	return mine.GetTop();
-}
-
-int Mouse::GetWidth() {
-	return mine.GetWidth();
-}
-
-int Mouse::GetHeight() {
-	return mine.GetHeight();
-}
-
-bool Mouse::GoldBackHome(double angle) {
-
-	if (mine.GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
-		mine.SetTopLeft(0, 0);
-		return true;
-	}
-	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
-		double x = mine.GetLeft() + 10 * cos(angle);
-		double y = mine.GetTop() + 10 * sin(angle);
-		mine.SetTopLeft(int(x), int(y));
-	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
-}
-
-int Mouse::GetObjStatus() {
-	return obj_status;
-}
-
-void Mouse::SetObjStatus(int value) {
-	obj_status = value;
-}*/
 
 void Mouse::Move() {
 	if (this->GetFrameIndexOfBitmap() == 0) {
@@ -477,8 +217,13 @@ void Mouse::Move() {
 	}
 }
 
+string Mouse::GetID() {
+	return ID;
+}
+
+// ------------- Mummy ---------------
 Mummy::Mummy(int i, int x, int y) {
-	this->LoadBitmapByString({ "resources/mummy_0.bmp", "resources/mummy_1.bmp"}, RGB(0,0,0));
+	this->LoadBitmapByString({ "resources/mummy_0.bmp", "resources/mummy_1.bmp" }, RGB(0, 0, 0));
 	if (i == 0) {
 		this->SetFrameIndexOfBitmap(0);
 	}
@@ -504,4 +249,8 @@ int Mummy::Score() {
 void Mummy::SetObjStatus(int value) {
 	obj_status = value;
 	this->SetFrameIndexOfBitmap(0);
+}
+
+string Mummy::GetID() {
+	return ID;
 }

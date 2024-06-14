@@ -20,58 +20,62 @@ hookcpp::~hookcpp() {
 }
 
 void hookcpp::Setting() {
-	// ¸ü¤J¹_¤lÂ\°Êªº¹Ï¤ù
-	hook_stay.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" , "resources/hook_13.bmp",
-		"resources/hook_12.bmp","resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
+	// è¼‰å…¥é‰¤å­æ“ºå‹•çš„åœ–ç‰‡
+	hook_stay.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", 
+		"resources/hook_3.bmp", "resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", 
+		"resources/hook_7.bmp", "resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", 
+		"resources/hook_11.bmp", "resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp", 
+		"resources/hook_15.bmp", "resources/hook_16.bmp", 
+		"resources/hook_16.bmp", "resources/hook_15.bmp", "resources/hook_14.bmp", "resources/hook_13.bmp",
+		"resources/hook_12.bmp", "resources/hook_11.bmp", "resources/hook_10.bmp", "resources/hook_9.bmp",
 		"resources/hook_8.bmp", "resources/hook_7.bmp",	"resources/hook_6.bmp", "resources/hook_5.bmp",
-		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp" }, RGB(255, 255, 255));
+		"resources/hook_4.bmp", "resources/hook_3.bmp", "resources/hook_2.bmp", "resources/hook_1.bmp", 
+		}, RGB(255, 255, 255));
 	hook_stay.SetTopLeft(375, 75);
 
-	// ¸ü¤Jµo®g¹_¤lªº¹Ï¤ù
-	hook_attack.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", "resources/hook_3.bmp",
-		"resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", "resources/hook_7.bmp",
-		"resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", "resources/hook_11.bmp",
-		"resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp" }, RGB(255, 255, 255));
+	// è¼‰å…¥ç™¼å°„é‰¤å­çš„åœ–ç‰‡
+	hook_attack.LoadBitmapByString({ "resources/hook_1.bmp", "resources/hook_2.bmp", 
+		"resources/hook_3.bmp", "resources/hook_4.bmp", "resources/hook_5.bmp", "resources/hook_6.bmp", 
+		"resources/hook_7.bmp","resources/hook_8.bmp", "resources/hook_9.bmp", "resources/hook_10.bmp", 
+		"resources/hook_11.bmp","resources/hook_12.bmp", "resources/hook_13.bmp", "resources/hook_14.bmp", 
+		"resources/hook_15.bmp", "resources/hook_16.bmp" }, RGB(255, 255, 255));
 	hook_attack.SetTopLeft(400, 75);
 
-	hook_status = 0; //³]©wª¬ºA¡G0=·n®Ì¤¤¡A1=©ñ½u¡A2=¦¬¦^½u¡A3=«DÃö¥d³~¤¤
+	hook_status = 0; //è¨­å®šç‹€æ…‹ï¼š0=æ–æ™ƒä¸­ï¼Œ1=æ”¾ç·šï¼Œ2=æ”¶å›ç·šï¼Œ3=éé—œå¡é€”ä¸­
 }
 
 void hookcpp::OnMove() {
-	if (hook_status == 0) {//¹_¤lÂ\°Ê¤¤
+	if (hook_status == 0) {//é‰¤å­æ“ºå‹•ä¸­
 		hook_stay.SetAnimation(100, false);
 	}
-	else if (hook_status == 1) {//¹_¤l¥Xµo¬¼Ây
-		//¨M©w¨¤«×
+	else if (hook_status == 1) {//é‰¤å­å‡ºç™¼ç‹©çµ
+		//æ±ºå®šè§’åº¦
 		frameindex = hook_stay.GetFrameIndexOfBitmap();
-		if (frameindex > 13)frameindex = 27 - frameindex;
+		if (frameindex > 15)frameindex = 32 - frameindex;
 		//hook.SetHook(frameindex);
 		hook_attack.SetFrameIndexOfBitmap(frameindex);
-		//¹_¤l¥Xµo
+		//é‰¤å­å‡ºç™¼
 		this->ReleaseTab(frameindex);
 	}
 
 	if (hook_status == 2) {
-		//¹_¤l¦^®a
+		//é‰¤å­å›å®¶
 		this->RollTab(frameindex);
 	}
 }
 
 void hookcpp::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if (nChar == VK_DOWN && hook_status == 0) {
-		hook_status = 1; //ª¬ºA¡G©ñ½u
+		hook_status = 1; //ç‹€æ…‹ï¼šæ”¾ç·š
 	}
 }
 
 void hookcpp::OnShow() {
-	if (hook_status == 0) {//¹_¤lÂ\°Ê¤¤
+	if (hook_status == 0) {//é‰¤å­æ“ºå‹•ä¸­
 		hook_attack.UnshowBitmap();
 		hook_stay.ShowBitmap();
 	}
-	else if (hook_status == 1 || hook_status == 2) {//¹_¤l¥Xµo
+	else if (hook_status == 1 || hook_status == 2) {//é‰¤å­å‡ºç™¼
 		hook_stay.UnshowBitmap();
 		hook_attack.ShowBitmap();
 	}
@@ -93,9 +97,9 @@ void hookcpp::ReleaseTab(int frameindex)
 	double angle = 340 - (10 * frameindex);
 	angle = angle * 3.1416 / 180;
 	if (hook_attack.GetLeft() + 150 > 900 || hook_attack.GetLeft() < 0 || hook_attack.GetTop() + 100 > 600) {
-		hook_status = 2;//¹_¤l¨ì©³¤F ¦^®a§a
+		hook_status = 2;//é‰¤å­åˆ°åº•äº† å›å®¶å§
 	}
-	else {//¹_¤lÄ~Äò¨«
+	else {//é‰¤å­ç¹¼çºŒèµ°
 		x = hook_attack.GetLeft() + 10 * cos(angle);
 		y = hook_attack.GetTop() - 10 * sin(angle);
 		hook_attack.SetTopLeft(int(x), int(y));
@@ -106,16 +110,16 @@ void hookcpp::RollTab(int frameindex)
 {
 	//double angle = 340 - (10 * frameindex);
 	//angle = angle * 3.1416 / 180;
-	double angle = atan2(75 - hook_attack.GetTop(), hook_attack.GetLeft() - 385);//xy¹ï½Õ¡G·|µe¶ê
+	double angle = atan2(75 - hook_attack.GetTop(), hook_attack.GetLeft() - 385);//xyå°èª¿ï¼šæœƒç•«åœ“
 
 
-	if (hook_attack.GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
+	if (hook_attack.GetTop() <= 75) {//å›åˆ°ä¸€å®šé«˜åº¦å¾Œå›æ”¶
 		hook_status = 0;
 		hook_attack.SetTopLeft(385, 75);
 		speed = 1.0;
 	}
 	else {
-		//­n¦A­¼¥H³t«×³]©w
+		//è¦å†ä¹˜ä»¥é€Ÿåº¦è¨­å®š
 		x = hook_attack.GetLeft() - 10 * cos(angle) * speed;
 		y = hook_attack.GetTop() + 10 * sin(angle) * speed;
 		hook_attack.SetTopLeft(int(x), int(y));
@@ -132,7 +136,24 @@ bool hookcpp::IsOverlap(int ox, int oy, int ow, int oh){
 
 	if (hy > ocy - 100 && hy < ocy) {
 		if (hx > ocx && hx < ocx + 81) {
-			hook_status = 2;//¹_¤l¦^®a
+			hook_status = 2;//é‰¤å­å›å®¶
+			return true;
+		}
+	}
+	return false;
+}
+
+bool hookcpp::operator==(Treasure* obj) {
+	double angle = 340 - (10 * hook_attack.GetFrameIndexOfBitmap());
+	angle = angle * 3.1416 / 180;
+	double hx = hook_attack.GetLeft() + 30 + (hook_attack.GetWidth() / 2) + 10 * cos(angle);
+	double hy = hook_attack.GetTop() - 10 * sin(angle);
+	double ocx = obj->GetLeft() + (double(obj->GetWidth()) / 2);
+	double ocy = obj->GetTop() + (double(obj->GetHeight()) / 2);
+
+	if (hy > ocy - 100 && hy < ocy) {
+		if (hx > ocx && hx < ocx + 81) {
+			hook_status = 2;//é‰¤å­å›å®¶
 			return true;
 		}
 	}
@@ -141,4 +162,10 @@ bool hookcpp::IsOverlap(int ox, int oy, int ow, int oh){
 
 void hookcpp::SetSpeed(double value) {
 	speed = value;
+}
+
+void hookcpp::BeginState() {
+	hook_status = 0;
+	hook_attack.SetTopLeft(385, 75);
+	speed = 1.0;
 }

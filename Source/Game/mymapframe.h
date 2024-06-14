@@ -12,7 +12,8 @@ namespace game_framework {
 		void SetStar(int value);
 	private:
 		CMovingBitmap frame;
-		CMovingBitmap number;
+		CMovingBitmap number[2];
+		int level = 0;
 	};
 
 	class End : public CMovingBitmap {
@@ -35,6 +36,7 @@ namespace game_framework {
 		void Setting();
 		void OnMove();
 		void GetPoint(int value);
+		void operator+=(int value);
 		int OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
 		int GetNowStage();
 		void Show();
@@ -42,12 +44,13 @@ namespace game_framework {
 		bool IsOver();
 		void SendScore(int score);
 		void SetTime(int value);
+		void operator=(int value);
 		int GetTime();
 		void SetThreshold(int a, int b, int c);
 	private:
 		CMovingBitmap Start;
 		CMovingBitmap Background;
-		Episode Stage[9];
+		Episode Stage[15];
 		CMovingBitmap Time_label;
 		CMovingBitmap Time_number[3];
 		CMovingBitmap Finish;
@@ -57,7 +60,7 @@ namespace game_framework {
 		int state = 0;
 		int count = 0;
 		int now_level = 1;
-		int total_level = 9;
+		int total_level = 15;
 		int end_score = 0;
 		int time = 0;
 		int score = 0;
