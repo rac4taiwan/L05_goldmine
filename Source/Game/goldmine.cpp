@@ -184,6 +184,10 @@ int Mouse::Score() {
 	return -7;
 }
 
+int Mouse::Time() {
+	return -5;
+}
+
 void Mouse::Move() {
 	if (this->GetFrameIndexOfBitmap() == 0) {
 		count += 1;

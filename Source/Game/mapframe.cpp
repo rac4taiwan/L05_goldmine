@@ -101,6 +101,16 @@ int MapFrame::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			now_level += 1;
 		}
 	}
+	else if (nChar == VK_DOWN && state == 0) {
+		if ((now_level+5) <= total_level) {
+			now_level += 5;
+		}
+	}
+	else if (nChar == VK_UP && state == 0) {
+		if ((now_level-5) >= 1) {
+			now_level -= 5;
+		}
+	}
 	return 0;
 }
 

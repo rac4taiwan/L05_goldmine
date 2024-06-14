@@ -163,3 +163,9 @@ bool hookcpp::operator==(Treasure* obj) {
 void hookcpp::SetSpeed(double value) {
 	speed = value;
 }
+
+void hookcpp::BeginState() {
+	hook_status = 0;
+	hook_attack.SetTopLeft(385, 75);
+	speed = 1.0;
+}

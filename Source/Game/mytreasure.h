@@ -71,7 +71,8 @@ namespace game_framework {
 	public:
 		Mouse(int x, int y);
 		~Mouse();
-		virtual int Score() override;
+		int Score() override;
+		int Time() override;
 		void Move();
 		string GetID() override;
 	private:
@@ -106,6 +107,7 @@ namespace game_framework {
 		int GetFrameIndex();
 		void SetAnimate(int delay, bool once);
 		void SetSpeed(double value);
+		void BeginState();
 	private:
 		CMovingBitmap hook_stay;
 		CMovingBitmap hook_attack;
