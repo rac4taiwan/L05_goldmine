@@ -29,7 +29,6 @@ void MapFrame::Setting() {
 		else if (i < 15) {
 			Stage[i].Setting(i + 1);
 			Stage[i].SetTopLeft(180 * (i % 5), 300);
-
 		}
 		
 	}
