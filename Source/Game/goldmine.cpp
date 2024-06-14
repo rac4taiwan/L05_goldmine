@@ -94,7 +94,6 @@ bool GoldMine::GoldBackHome(double angle) {
 
 }
 
-
 string GoldMine::GetID() {
 	return ID;
 }
@@ -111,7 +110,6 @@ Stone::~Stone() {
 
 }
 
-
 int Stone::Score() {
 	if (size == 1) {
 		return -10;
@@ -127,7 +125,6 @@ int Stone::Score() {
 	}
 }
 
-
 string Stone::GetID() {
 	return ID;
 }
@@ -137,7 +134,6 @@ Diamond::Diamond(int x, int y) {
 	this->LoadBitmapByString({ "resources/diamond.bmp" }, RGB(0, 0, 0));
 	this->SetTopLeft(x, y);
 }
-
 
 Diamond::Diamond() {
 
@@ -150,7 +146,6 @@ Diamond::~Diamond() {
 int Diamond::Time() {
 	return 20;
 }
-
 
 string Diamond::GetID() {
 	return ID;
@@ -166,7 +161,6 @@ Can::~Can() {
 
 }
 
-
 int Can::Time() {
 	return -15;
 }
@@ -176,7 +170,6 @@ string Can::GetID() {
 }
 
 // ------------------Mouse-------------------
-// ---------------------Can----------------------
 Mouse::Mouse(int x, int y) {
 	this->LoadBitmapByString({ "resources/mouse_left.bmp", "resources/mouse_right.bmp" }, RGB(255, 255, 255));
 	this->SetTopLeft(x, y);
