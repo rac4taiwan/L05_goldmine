@@ -11,7 +11,7 @@
 using namespace game_framework;
 
 /////////////////////////////////////////////////////////////////////////////
-// é€™å€‹classç‚ºéŠæˆ²çš„éŠæˆ²åŸ·è¡Œç‰©ä»¶ï¼Œä¸»è¦çš„éŠæˆ²ç¨‹å¼éƒ½åœ¨é€™è£¡
+// ³o­Óclass¬°¹CÀ¸ªº¹CÀ¸°õ¦æª«¥ó¡A¥D­nªº¹CÀ¸µ{¦¡³£¦b³o¸Ì
 /////////////////////////////////////////////////////////////////////////////
 
 CGameStateRun::CGameStateRun(CGame *g) : CGameState(g)
@@ -29,20 +29,20 @@ void CGameStateRun::OnBeginState()
 }
 
 
-void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
+void CGameStateRun::OnMove()							// ²¾°Ê¹CÀ¸¤¸¯À
 {
 	gm.OnMove();  // mapframe
 
 	hook.OnMove(); // hook
-	// ç¤¦ç‰©åŸ·è¡Œå¼
+	// Äqª«°õ¦æ¦¡
 	for (int i = 0; i < mine_kind; i++) {
 		for (int j = 0; j < int(treasure[i].size()); j++) {
-			//æª¢æŸ¥ç¤¦ç‰©æ˜¯å¦ç‚º"mouse"ï¼Œæ˜¯å°±åŸ·è¡Œç‰©ä»¶"mouse"çš„Move() (éœ€å…ˆå°‡ç‰©ä»¶é¡å‹è½‰æ›ç‚ºMouse)
+			//ÀË¬dÄqª«¬O§_¬°"mouse"¡A¬O´N°õ¦æª«¥ó"mouse"ªºMove() (»İ¥ı±Nª«¥óÃş«¬Âà´«¬°Mouse)
 			if (treasure[i][j]->GetObjStatus() == 1 && treasure[i][j]->GetID() == "mouse") {
 				Mouse* tmp = dynamic_cast<Mouse*>(treasure[i][j]);
 				tmp->Move();
 			}
-			//ç‰©ä»¶é¡å‹"Mummy"å°ˆç”¨
+			//ª«¥óÃş«¬"Mummy"±M¥Î
 			else if (treasure[i][j]->GetObjStatus() == 3) {
 				if (treasure[i][j - 1]->GetObjStatus() == 0) {
 					treasure[i][j]->SetObjStatus(1);
@@ -52,7 +52,7 @@ void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
 
 			if (treasure[i][j]->GetObjStatus() == 1 || treasure[i][j]->GetObjStatus() == 2) {
 				//check = hook.IsOverlap(treasure[i][j]->GetLeft(), treasure[i][j]->GetTop(), treasure[i][j]->GetWidth(), treasure[i][j]->GetHeight());
-				//è¦†å¯«é‹ç®—å­"=="å–ä»£hook.IsOverlap()
+				//ÂĞ¼g¹Bºâ¤l"=="¨ú¥Nhook.IsOverlap()
 				if (hook == treasure[i][j]) {
 					treasure[i][j]->SetObjStatus(2);
 					hook.SetSpeed(treasure[i][j]->Catch());
@@ -62,23 +62,23 @@ void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
 					score += treasure[i][j]->Score();
 					if (score >= 0) {
 						//gm.GetPoint(treasure[i][j]->Score());
-						//è¦†å¯«é‹ç®—å­"+="å–ä»£gm.GetPoint()
+						//ÂĞ¼g¹Bºâ¤l"+="¨ú¥Ngm.GetPoint()
 						gm += treasure[i][j]->Score();
 					}
-					// åˆ†æ•¸å°æ–¼é›¶å‰‡é€²å…¥çµç®—
+					// ¤À¼Æ¤p©ó¹s«h¶i¤Jµ²ºâ
 					else if (score < 0) {
 						score = 0;
 						gm.ChangeState(2);
 					}
 					//gm.SetTime(gm.GetTime() + treasure[i][j]->Time());
-					//è¦†å¯«é‹ç®—å­"="å–ä»£gm.SetTime()
+					//ÂĞ¼g¹Bºâ¤l"="¨ú¥Ngm.SetTime()
 					gm = treasure[i][j]->Time();
 				}
 			}
 		}
 	}
 	
-	//åˆ¤æ–·é‡‘ç¤¦æ˜¯å¦è¢«å¤¾å®Œ
+	//§PÂ_ª÷Äq¬O§_³Q§¨§¹
 	int gold_check = treasure[0].size();
 	for (int i = 0; i < int(treasure[0].size()); i++) {
 		if (treasure[0][i]->GetObjStatus() == 0) {
@@ -91,7 +91,7 @@ void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
 	}
 
 
-	// è‹¥é€²å…¥çµç®—ç•«é¢ï¼Œéœ€å‚³åˆ†æ•¸çµ¦mapframe  (å³gm)ï¼Œä¸¦åˆªé™¤ç¤¦ç‰©é™£åˆ—è£¡çš„ç‰©ä»¶
+	// ­Y¶i¤Jµ²ºâµe­±¡A»İ¶Ç¤À¼Æµ¹mapframe  (§Ygm)¡A¨Ã§R°£Äqª«°}¦C¸Ìªºª«¥ó
 	if (gm.IsOver()) {
 		gm.SendScore(score);
 		hook.BeginState();
@@ -105,14 +105,14 @@ void CGameStateRun::OnMove()							// ç§»å‹•éŠæˆ²å…ƒç´ 
 
 }
 
-void CGameStateRun::OnInit()  								// éŠæˆ²çš„åˆå€¼åŠåœ–å½¢è¨­å®š
+void CGameStateRun::OnInit()  								// ¹CÀ¸ªºªì­È¤Î¹Ï§Î³]©w
 {
 
 }
 
 void CGameStateRun::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags)
 {
-	// é—œå¡è¨­è¨ˆåœ¨é€™è£¡
+	// Ãö¥d³]­p¦b³o¸Ì
 	level = gm.OnKeyDown(nChar, nRepCnt, nFlags);
 	if (level == 1) {
 		score = 0;
@@ -442,23 +442,23 @@ void CGameStateRun::OnKeyUp(UINT nChar, UINT nRepCnt, UINT nFlags)
 	
 }
 
-void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // è™•ç†æ»‘é¼ çš„å‹•ä½œ
+void CGameStateRun::OnLButtonDown(UINT nFlags, CPoint point)  // ³B²z·Æ¹«ªº°Ê§@
 {	
 }
 
-void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
+void CGameStateRun::OnLButtonUp(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
 {
 }
 
-void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
+void CGameStateRun::OnMouseMove(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
 {
 }
 
-void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // è™•ç†æ»‘é¼ çš„å‹•ä½œ
+void CGameStateRun::OnRButtonDown(UINT nFlags, CPoint point)  // ³B²z·Æ¹«ªº°Ê§@
 {
 }
 
-void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// è™•ç†æ»‘é¼ çš„å‹•ä½œ
+void CGameStateRun::OnRButtonUp(UINT nFlags, CPoint point)	// ³B²z·Æ¹«ªº°Ê§@
 {
 }
 
@@ -466,7 +466,7 @@ void CGameStateRun::OnShow()
 {
 
 	gm.Show();
-	if (gm.GetNowStage() == 1) {//éŠæˆ²ä¸­
+	if (gm.GetNowStage() == 1) {//¹CÀ¸¤¤
 
 		hook.OnShow();
 
