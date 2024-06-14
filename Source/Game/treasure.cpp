@@ -31,17 +31,17 @@ int Treasure::Time() {
 }
 
 bool Treasure::GoldBackHome(double angle) {
-	if (this->GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
+	if (this->GetTop() <= 75) {//å›åˆ°ä¸€å®šé«˜åº¦å¾Œå›æ”¶
 		this->SetTopLeft(0, 0);
 		return true;
 	}
 	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
+		//è¦å†ä¹˜ä»¥é€Ÿåº¦è¨­å®š(è¦è·Ÿé‰¤å­çš„é€Ÿåº¦ä¸€æ¨£
 		double x = this->GetLeft() + 10 * cos(angle);
 		double y = this->GetTop() + 10 * sin(angle);
 		this->SetTopLeft(int(x), int(y));
 	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
+	return false; //ç¨‹å¼ç¹¼çºŒåŸ·è¡Œ
 }
 
 int Treasure::GetObjStatus() {

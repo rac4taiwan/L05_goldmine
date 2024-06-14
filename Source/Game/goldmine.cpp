@@ -68,12 +68,12 @@ int GoldMine::Score() {
 
 bool GoldMine::GoldBackHome(double angle) {
 
-	if (this->GetTop() <= 75) {//¦^¨ì¤@©w°ª«×«á¦^¦¬
+	if (this->GetTop() <= 75) {//å›žåˆ°ä¸€å®šé«˜åº¦å¾Œå›žæ”¶
 		SetTopLeft(0, 0);
 		return true;
 	}
 	else if (obj_status == 2) {
-		//­n¦A­¼¥H³t«×³]©w(­n¸ò¹_¤lªº³t«×¤@¼Ë
+		//è¦å†ä¹˜ä»¥é€Ÿåº¦è¨­å®š(è¦è·Ÿé‰¤å­çš„é€Ÿåº¦ä¸€æ¨£
 		double x, y;
 		if (size == 1) {
 			x = GetLeft() + 10 * cos(angle) * 0.95;
@@ -90,9 +90,10 @@ bool GoldMine::GoldBackHome(double angle) {
 		SetTopLeft(int(x), int(y));
 
 	}
-	return false; //µ{¦¡Ä~Äò°õ¦æ
+	return false; //ç¨‹å¼ç¹¼çºŒåŸ·è¡Œ
 
 }
+
 
 string GoldMine::GetID() {
 	return ID;
@@ -110,6 +111,7 @@ Stone::~Stone() {
 
 }
 
+
 int Stone::Score() {
 	if (size == 1) {
 		return -10;
@@ -125,6 +127,7 @@ int Stone::Score() {
 	}
 }
 
+
 string Stone::GetID() {
 	return ID;
 }
@@ -134,6 +137,7 @@ Diamond::Diamond(int x, int y) {
 	this->LoadBitmapByString({ "resources/diamond.bmp" }, RGB(0, 0, 0));
 	this->SetTopLeft(x, y);
 }
+
 
 Diamond::Diamond() {
 
@@ -146,6 +150,7 @@ Diamond::~Diamond() {
 int Diamond::Time() {
 	return 20;
 }
+
 
 string Diamond::GetID() {
 	return ID;
@@ -160,6 +165,7 @@ Can::Can(int x, int y) {
 Can::~Can() {
 
 }
+
 
 int Can::Time() {
 	return -15;

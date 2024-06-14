@@ -113,9 +113,9 @@ namespace game_framework {
 		CMovingBitmap hook_attack;
 		double x;
 		double y;
-		double angle;			//Åã¥Ü¥Ø«e¨¤«×
+		double angle;			//é¡¯ç¤ºç›®å‰è§’åº¦
 		double speed = 1.0;
-		int hook_status = 0; //³]©wª¬ºA¡G0=·n®Ì¤¤¡A1=©ñ½u¡A2=¦¬¦^½u¡A3=«DÃö¥d³~¤¤
+		int hook_status = 0; //è¨­å®šç‹€æ…‹ï¼š0=æ–æ™ƒä¸­ï¼Œ1=æ”¾ç·šï¼Œ2=æ”¶å›ç·šï¼Œ3=éé—œå¡é€”ä¸­
 		int frameindex;
 	};
 

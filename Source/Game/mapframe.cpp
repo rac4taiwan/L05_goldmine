@@ -16,7 +16,7 @@ MapFrame::MapFrame(){
 
 void MapFrame::Setting() {
 
-	// ³]©wÃö¥d¹Ï®×
+	// è¨­å®šé—œå¡åœ–æ¡ˆ
 	for (int i = 0; i < total_level; i++) { 
 		if (i < 5) {
 			Stage[i].Setting(i + 1);
@@ -29,13 +29,14 @@ void MapFrame::Setting() {
 		else if (i < 15) {
 			Stage[i].Setting(i + 1);
 			Stage[i].SetTopLeft(180 * (i % 5), 300);
+
 		}
 		
 	}
-	// ¸ü¤J­I´º¹Ï
+	// è¼‰å…¥èƒŒæ™¯åœ–
 	Background.LoadBitmapByString({ "resources/background_0.bmp","resources/background.bmp" }, RGB(255,255,255));
 	Background.SetTopLeft(0, 0);
-	// ¸ü¤J¹CÀ¸¶i¦æ®Éªº®É¶¡
+	// è¼‰å…¥éŠæˆ²é€²è¡Œæ™‚çš„æ™‚é–“
 	Time_label.LoadBitmapByString({ "resources/Time.bmp" }, RGB(255, 255, 255));
 	Time_label.SetTopLeft(670, 30);
 	for (int i = 0; i < 3; i++) {
@@ -43,7 +44,7 @@ void MapFrame::Setting() {
 		Time_number[i].SetTopLeft(775 + i * (25), 30);
 	}
 
-	// ¸ü¤J¹CÀ¸¶i¦æ®Éªº¤À¼Æ
+	// è¼‰å…¥éŠæˆ²é€²è¡Œæ™‚çš„åˆ†æ•¸
 	Score_label.LoadBitmapByString({ "resources/Score.bmp" }, RGB(255, 255, 255));
 	Score_label.SetTopLeft(-10, 30);
 	for (int i = 0; i < 3; i++) {
@@ -53,11 +54,11 @@ void MapFrame::Setting() {
 }
 
 void MapFrame::OnMove() {
-	// state ==  0 ¬°¿ïÃöµe­±; 1 ¬°¹CÀ¸¶i¦æª¬ºA; 2 ¬°µ²ºâµe­±
+	// state ==  0 ç‚ºé¸é—œç•«é¢; 1 ç‚ºéŠæˆ²é€²è¡Œç‹€æ…‹; 2 ç‚ºçµç®—ç•«é¢
 	if (state == 1) {
 		count += 1;
-		// count ¬°­p®É¾¹¡A¨C30­Ócount¬°¤@¬í
-		// number[0]¡B[1]¡B[2]¤À§O¬°¦Ê¡B¤Q¡B­Ó¦ì¼Æ¡A­Y¦Ê¦ì¼Æ¬°0«hÁôÂÃ¡A¤Q¦ì¼Æ¦P²z
+		// count ç‚ºè¨ˆæ™‚å™¨ï¼Œæ¯30å€‹countç‚ºä¸€ç§’
+		// number[0]ã€[1]ã€[2]åˆ†åˆ¥ç‚ºç™¾ã€åã€å€‹ä½æ•¸ï¼Œè‹¥ç™¾ä½æ•¸ç‚º0å‰‡éš±è—ï¼Œåä½æ•¸åŒç†
 		if (count == 30) {
 			count = 0;
 			time -= 1;
@@ -121,7 +122,7 @@ int MapFrame::GetNowStage() {
 void MapFrame::Show()
 {
 	//Start.ShowBitmap();
-	if (state == 0) {//¿ï³æµe­±
+	if (state == 0) {//é¸å–®ç•«é¢
 		Background.SetFrameIndexOfBitmap(0);
 		Background.ShowBitmap();
 		for (int i = 0; i < total_level; i++) {
@@ -133,7 +134,7 @@ void MapFrame::Show()
 			}
 		}
 	}
-	else if (state == 1) {//¹CÀ¸¤¤
+	else if (state == 1) {//éŠæˆ²ä¸­
 		Background.SetFrameIndexOfBitmap(1);
 		Background.ShowBitmap();
 		Time_label.ShowBitmap();
@@ -152,7 +153,6 @@ void MapFrame::Show()
 			Time_number[2].SetFrameIndexOfBitmap(time % 10);
 			Time_number[2].ShowBitmap();
 		}
-
 		if ((score / 100) != 0) {
 			Score_number[0].SetFrameIndexOfBitmap(score / 100);
 			Score_number[1].SetFrameIndexOfBitmap((score % 100) / 10);
@@ -294,6 +294,7 @@ void End::Setting(int score, int level) {
 		frame.SetFrameIndexOfBitmap(0);
 		star = 0;
 	}
+
 
 	frame.ShowBitmap();
 	for (int i = 0; i < 3; i++) {
